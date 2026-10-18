@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ScopeShield AI — Local Freelance Contract & Scope Creep Defense Engine</title>
+  <meta name="description" content="Local-first freelance contract risk auditor and scope creep defense engine powered by Google's open-weight Gemma 2. Protect your billable hours, IP, and client boundaries.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%3E<text y=%2226%22 font-size=%2226%22>🛡️</text></svg>">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Announcement Bar -->
+  <div class="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 border-b border-indigo-700/50 text-xs py-2 px-4 text-center text-indigo-200 flex items-center justify-center gap-2">
+    <span class="inline-block px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold uppercase tracking-wider text-[10px]">Hacktoberfest 2026</span>
+    <span>Week 2 Side Hustle Challenge — Built with Open-Weight <strong>Google Gemma 2</strong></span>
+    <span class="text-indigo-400">•</span>
+    <span class="text-emerald-400 font-medium">🔒 100% Local Inference & Privacy Shield</span>
+  </div>
+
+  <!-- Header / Navigation -->
+  <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur-md sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 text-xl font-bold">
+          🛡️
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-extrabold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white via-indigo-100 to-indigo-300">ScopeShield AI</span>
+            <span class="text-[10px] px-1.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 font-mono border border-indigo-500/30">v1.0</span>
+          </div>
+          <p class="text-xs text-slate-400 hidden sm:block">Freelance Scope Creep & Contract Risk Shield</p>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="flex items-center gap-1 sm:gap-2">
+        <button data-tab="auditor" class="tab-btn px-3 py-1.5 rounded-lg text-sm font-medium transition-all text-white bg-indigo-600 shadow-sm shadow-indigo-500/30">
+          🔍 Risk Auditor
+        </button>
+        <button data-tab="sow" class="tab-btn px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+          📝 SOW Generator
+        </button>
+        <button data-tab="email" class="tab-btn px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+          ✉️ Pushback Drafter
+        </button>
+        <button data-tab="calculator" class="tab-btn px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+          💰 ROI Calculator
+        </button>
+        <button data-tab="model" class="tab-btn px-3 py-1.5 rounded-lg text-sm font-medium text-slate-300 hover:text-white hover:bg-slate-800 transition-all">
+          ⚙️ Model Status
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+    <!-- TAB 1: CONTRACT AUDITOR -->
+    <section id="tab-auditor" class="tab-content block space-y-8">
+      <!-- Hero / Introduction -->
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6 relative overflow-hidden backdrop-blur-sm">
+        <div class="absolute -right-16 -top-16 w-64 h-64 bg-indigo-600/10 rounded-full blur-3xl pointer-events-none"></div>
+        <div class="max-w-3xl">
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white mb-2">
+            Audit Freelance Contracts Before You Sign
+          </h1>
+          <p class="text-slate-300 text-sm leading-relaxed">
+            Stop losing thousands to unbilled scope creep, 90-day payment delays, and IP traps. Paste any client agreement, MSA, or raw scope notes below. ScopeShield's 6-pillar open-weight engine analyzes hidden risks and provides pre-drafted counter-clauses.
+          </p>
+        </div>
+
+        <!-- Presets Bar -->
+        <div class="mt-6 pt-5 border-t border-slate-800/80 flex flex-wrap items-center gap-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Try Sample Presets:</span>
+          <button id="preset-predatory" class="px-3 py-1 text-xs rounded-lg bg-red-950/60 text-red-300 border border-red-800/50 hover:bg-red-900/60 transition-colors">
+            ⚠️ Predatory Web Dev MSA (Score: 88)
+          </button>
+          <button id="preset-vague" class="px-3 py-1 text-xs rounded-lg bg-amber-950/60 text-amber-300 border border-amber-800/50 hover:bg-amber-900/60 transition-colors">
+            ⚡ Vague Brief Scope Trap (Score: 64)
+          </button>
+          <button id="preset-safe" class="px-3 py-1 text-xs rounded-lg bg-emerald-950/60 text-emerald-300 border border-emerald-800/50 hover:bg-emerald-900/60 transition-colors">
+            🛡️ Shielded / Balanced SOW (Score: 14)
+          </button>
+        </div>
+      </div>
+
+      <!-- Editor & Input Area -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-6 space-y-4">
+          <div class="flex items-center justify-between">
+            <label for="contract-input" class="text-sm font-semibold text-slate-300 flex items-center gap-2">
+              <span>Agreement Text or Client Scope</span>
+              <span class="text-xs text-slate-500 font-normal">(Paste full text, SOW, or draft)</span>
+            </label>
+            <button id="clear-input" class="text-xs text-slate-400 hover:text-white transition-colors">Clear</button>
+          </div>
+          <div class="relative">
+            <textarea id="contract-input" rows="18" placeholder="Paste your client agreement, proposal draft, or email scope here to audit..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-4 font-mono text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all leading-relaxed placeholder:text-slate-600 shadow-inner"></textarea>
+          </div>
+
+          <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-2 text-xs text-slate-400">
+              <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>100% Private: Processed locally</span>
+            </div>
+            <button id="btn-run-audit" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2 active:scale-95">
+              <span>Audit Contract with ScopeShield</span>
+              <span id="audit-spinner" class="hidden animate-spin">🔄</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Audit Results Panel -->
+        <div class="lg:col-span-6 space-y-4">
+          <div id="audit-placeholder" class="h-full min-h-[440px] border border-dashed border-slate-800 rounded-xl flex flex-col items-center justify-center p-8 text-center bg-slate-900/30">
+            <div class="w-16 h-16 rounded-2xl bg-slate-800/80 flex items-center justify-center text-3xl mb-4 text-slate-400">
+              ⚖️
+            </div>
+            <h3 class="text-base font-semibold text-slate-200">No Contract Audited Yet</h3>
+            <p class="text-xs text-slate-400 max-w-sm mt-1">
+              Select one of the sample presets above or paste client contract text on the left, then click "Audit Contract" to see your risk score and findings.
+            </p>
+          </div>
+
+          <div id="audit-results" class="hidden space-y-6">
+            <!-- Score Card -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 shadow-xl">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+                <div class="flex items-center gap-4">
+                  <div id="score-circle" class="w-16 h-16 rounded-2xl bg-red-950 border-2 border-red-600 flex flex-col items-center justify-center shadow-lg">
+                    <span id="score-grade" class="text-2xl font-black text-red-400 leading-none">F</span>
+                    <span id="score-number" class="text-[10px] font-bold text-red-300">88/100</span>
+                  </div>
+                  <div>
+                    <div class="flex items-center gap-2">
+                      <h3 id="risk-level-badge" class="text-sm font-bold uppercase tracking-wider text-red-400">Critical / Predatory</h3>
+                      <span id="findings-pill" class="text-xs px-2 py-0.5 rounded-full bg-red-900/50 text-red-200 border border-red-700/50 font-semibold">6 Red Flags</span>
+                    </div>
+                    <p id="risk-summary-text" class="text-xs text-slate-300 mt-1 max-w-md">Contract contains dangerous clauses that jeopardize payment and legal safety.</p>
+                  </div>
+                </div>
+                <div class="text-right sm:border-l sm:border-slate-800 sm:pl-4">
+                  <div class="text-[10px] uppercase font-bold text-slate-400">Est. Exposure Risk</div>
+                  <div id="exposure-amount" class="text-xs font-semibold text-amber-300 mt-0.5 max-w-[180px]">$2,500 - $8,000+ loss</div>
+                </div>
+              </div>
+
+              <!-- 6 Pillars Progress -->
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-4">
+                <div class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80">
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-slate-400">Scope Clarity</span>
+                    <span id="pillar-scope" class="font-bold text-slate-200">75%</span>
+                  </div>
+                  <div class="w-full bg-slate-800 rounded-full h-1.5">
+                    <div id="bar-scope" class="bg-indigo-500 h-1.5 rounded-full" style="width: 75%"></div>
+                  </div>
+                </div>
+                <div class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80">
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-slate-400">Revision Caps</span>
+                    <span id="pillar-revisions" class="font-bold text-red-400">85%</span>
+                  </div>
+                  <div class="w-full bg-slate-800 rounded-full h-1.5">
+                    <div id="bar-revisions" class="bg-red-500 h-1.5 rounded-full" style="width: 85%"></div>
+                  </div>
+                </div>
+                <div class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80">
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-slate-400">Payment Terms</span>
+                    <span id="pillar-payment" class="font-bold text-red-400">80%</span>
+                  </div>
+                  <div class="w-full bg-slate-800 rounded-full h-1.5">
+                    <div id="bar-payment" class="bg-red-500 h-1.5 rounded-full" style="width: 80%"></div>
+                  </div>
+                </div>
+                <div class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80">
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-slate-400">IP Ownership</span>
+                    <span id="pillar-ip" class="font-bold text-red-400">90%</span>
+                  </div>
+                  <div class="w-full bg-slate-800 rounded-full h-1.5">
+                    <div id="bar-ip" class="bg-red-500 h-1.5 rounded-full" style="width: 90%"></div>
+                  </div>
+                </div>
+                <div class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80">
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-slate-400">Kill Fee & Term</span>
+                    <span id="pillar-killfee" class="font-bold text-amber-400">50%</span>
+                  </div>
+                  <div class="w-full bg-slate-800 rounded-full h-1.5">
+                    <div id="bar-killfee" class="bg-amber-500 h-1.5 rounded-full" style="width: 50%"></div>
+                  </div>
+                </div>
+                <div class="bg-slate-950/60 p-2.5 rounded-lg border border-slate-800/80">
+                  <div class="flex justify-between text-[11px] mb-1">
+                    <span class="text-slate-400">Liability / Indemnity</span>
+                    <span id="pillar-liability" class="font-bold text-red-400">80%</span>
+                  </div>
+                  <div class="w-full bg-slate-800 rounded-full h-1.5">
+                    <div id="bar-liability" class="bg-red-500 h-1.5 rounded-full" style="width: 80%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Findings List Header & Actions -->
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-bold uppercase tracking-wider text-slate-300">Flagged Risk Clauses & Shields</h4>
+              <button id="btn-copy-all-shields" class="text-xs text-indigo-400 hover:text-indigo-300 font-medium">
+                Copy All Counter-Clauses
+              </button>
+            </div>
+
+            <!-- Findings Accordion / Cards Container -->
+            <div id="findings-container" class="space-y-3">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: SOW GENERATOR -->
+    <section id="tab-sow" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-white mb-2">Bulletproof SOW & Proposal Generator</h2>
+        <p class="text-slate-300 text-sm max-w-3xl">
+          Turn rough client notes or requirements into a professional, legally-shielded Statement of Work. Includes fixed milestone payment tranches (50% upfront), strict 2-revision caps, 5-day deemed approval windows, and payment-contingent IP assignment.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 space-y-4 bg-slate-900 p-5 rounded-xl border border-slate-800">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Project Name</label>
+            <input type="text" id="sow-project-name" value="Customer Portal & Checkout Integration" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Client Name</label>
+              <input type="text" id="sow-client-name" value="Acme Growth Labs Inc." class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Your Name / Agency</label>
+              <input type="text" id="sow-freelancer-name" value="Tanishq Studio" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+            </div>
+          </div>
+          <div class="grid grid-cols-3 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Total Fee ($ USD)</label>
+              <input type="number" id="sow-fee" value="5000" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Change Rate ($/hr)</label>
+              <input type="number" id="sow-rate" value="110" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Timeline (Weeks)</label>
+              <input type="number" id="sow-weeks" value="4" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">In-Scope Deliverables (1 per line)</label>
+            <textarea id="sow-scope" rows="5" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">Stripe Elements billing widget integration
+Webhook event handler for order fulfillment
+Custom responsive dashboard in React & Tailwind
+Automated customer confirmation email templates
+Staging environment deployment & QA signoff</textarea>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Custom Exclusions / Out of Scope (Optional)</label>
+            <textarea id="sow-out-of-scope" rows="2" placeholder="e.g. Native iOS/Android app, Ongoing copywriting..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-3 text-xs font-mono text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none"></textarea>
+          </div>
+
+          <button id="btn-generate-sow" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2">
+            <span>Generate Shielded SOW Proposal</span>
+          </button>
+        </div>
+
+        <div class="lg:col-span-7 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Generated Statement of Work (Markdown)</span>
+            <div class="flex gap-2">
+              <button id="btn-copy-sow" class="px-3 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 transition-colors">
+                Copy Markdown
+              </button>
+            </div>
+          </div>
+          <div class="relative">
+            <pre id="sow-preview" class="w-full bg-slate-900 border border-slate-800 rounded-xl p-5 font-mono text-xs text-slate-200 overflow-x-auto h-[600px] overflow-y-auto leading-relaxed shadow-inner"></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: PUSHBACK EMAIL DRAFTER -->
+    <section id="tab-email" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-white mb-2">Assertive Client Pushback & Counter-Email Drafter</h2>
+        <p class="text-slate-300 text-sm max-w-3xl">
+          Saying "no" or setting boundaries is the hardest part of freelancing. Select a common client scenario below to generate a diplomatic, high-status email that protects your boundaries without burning bridges.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-5 space-y-4 bg-slate-900 p-5 rounded-xl border border-slate-800">
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Select Scenario</label>
+            <select id="email-scenario" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+              <option value="unlimited_revisions">Push back against Unlimited Revisions in draft</option>
+              <option value="out_of_scope">Client asking for Out-of-Scope feature mid-sprint</option>
+              <option value="deposit_requirement">Client requesting 0% deposit (Demand 50% upfront)</option>
+              <option value="net90_pushback">Push back against Net-60 / Net-90 payment terms</option>
+              <option value="ip_contingency">IP transfer strictly contingent on final payment</option>
+              <option value="overdue_invoice">Friendly yet firm overdue payment reminder</option>
+            </select>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Client First Name</label>
+              <input type="text" id="email-client-name" value="Sarah" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Your Name</label>
+              <input type="text" id="email-freelancer-name" value="Tanishq" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Project Name</label>
+            <input type="text" id="email-project-name" value="SaaS Billing System" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+          </div>
+
+          <div id="extra-email-inputs" class="space-y-3">
+            <div id="wrapper-feature" class="hidden">
+              <label class="block text-xs font-semibold text-slate-300 mb-1">Out-of-Scope Feature Name</label>
+              <input type="text" id="email-feature" value="multi-currency support & invoice PDF exports" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+            </div>
+            <div id="wrapper-invoice" class="hidden grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Invoice Number</label>
+                <input type="text" id="email-inv-num" value="INV-204" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-slate-300 mb-1">Days Overdue</label>
+                <input type="number" id="email-days-overdue" value="12" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-300 mb-1">Hourly Change Order Rate ($)</label>
+            <input type="number" id="email-rate" value="110" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none">
+          </div>
+
+          <button id="btn-draft-email" class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 transition-all flex items-center justify-center gap-2">
+            <span>Draft Email</span>
+          </button>
+        </div>
+
+        <div class="lg:col-span-7 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Generated Email</span>
+            <button id="btn-copy-email" class="px-3 py-1 text-xs rounded bg-slate-800 hover:bg-slate-700 text-indigo-300 border border-slate-700 transition-colors">
+              Copy Email
+            </button>
+          </div>
+          <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 space-y-4 shadow-inner">
+            <div>
+              <span class="text-[10px] font-bold uppercase text-slate-500">Subject:</span>
+              <p id="email-subject" class="text-sm font-semibold text-indigo-200 mt-0.5 select-all"></p>
+            </div>
+            <div class="border-t border-slate-800 pt-3">
+              <span class="text-[10px] font-bold uppercase text-slate-500">Message Body:</span>
+              <pre id="email-body" class="font-sans text-xs text-slate-200 whitespace-pre-wrap leading-relaxed mt-1 select-all"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: ROI CALCULATOR -->
+    <section id="tab-calculator" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-white mb-2">Scope Creep & Unpaid Work ROI Calculator</h2>
+        <p class="text-slate-300 text-sm max-w-3xl">
+          Calculate the actual financial damage unpaid revisions and ambiguous client briefs cost you each year. Discover why spending $29/mo on ScopeShield AI pays for itself in less than 48 hours.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-900 p-6 rounded-2xl border border-slate-800">
+        <div class="space-y-6">
+          <div>
+            <div class="flex justify-between text-xs font-semibold text-slate-300 mb-2">
+              <span>Unbilled Revisions / Scope Creep per Week:</span>
+              <span id="val-hours" class="text-indigo-400 font-bold">5 hours</span>
+            </div>
+            <input type="range" id="calc-hours" min="1" max="20" value="5" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+              <span>1 hr/wk</span>
+              <span>10 hrs/wk</span>
+              <span>20 hrs/wk</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold text-slate-300 mb-2">
+              <span>Your Effective Hourly Rate ($ USD):</span>
+              <span id="val-rate" class="text-indigo-400 font-bold">$100 / hr</span>
+            </div>
+            <input type="range" id="calc-rate" min="25" max="300" step="5" value="100" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+              <span>$25/hr</span>
+              <span>$150/hr</span>
+              <span>$300/hr</span>
+            </div>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold text-slate-300 mb-2">
+              <span>Active Work Weeks per Year:</span>
+              <span id="val-weeks" class="text-indigo-400 font-bold">48 weeks</span>
+            </div>
+            <input type="range" id="calc-weeks" min="20" max="52" value="48" class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+          </div>
+        </div>
+
+        <!-- Output Cards -->
+        <div class="flex flex-col justify-center space-y-4 bg-slate-950 p-6 rounded-xl border border-slate-800/80">
+          <div>
+            <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Annual Unpaid Work Lost</span>
+            <div id="stat-annual-loss" class="text-3xl sm:text-4xl font-black text-red-400 mt-1">$24,000 / yr</div>
+            <p class="text-xs text-slate-400 mt-1">Direct unbilled billable value given away for free.</p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4 pt-4 border-t border-slate-800">
+            <div>
+              <span class="text-[11px] font-semibold text-slate-400">Total Unbilled Hours</span>
+              <div id="stat-annual-hours" class="text-xl font-bold text-amber-300 mt-0.5">240 Hours</div>
+              <p class="text-[10px] text-slate-500">Equal to 6 full 40-hr work weeks!</p>
+            </div>
+            <div>
+              <span class="text-[11px] font-semibold text-slate-400">ScopeShield ROI</span>
+              <div id="stat-roi" class="text-xl font-bold text-emerald-400 mt-0.5">6,800%</div>
+              <p class="text-[10px] text-slate-500">At $29/mo ($348/yr) subscription</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: MODEL STATUS & SETTINGS -->
+    <section id="tab-model" class="tab-content hidden space-y-6">
+      <div class="bg-slate-900/60 border border-slate-800 rounded-2xl p-6">
+        <h2 class="text-xl sm:text-2xl font-extrabold text-white mb-2">Google Gemma 2 Local Inference Status</h2>
+        <p class="text-slate-300 text-sm max-w-3xl">
+          ScopeShield AI operates on a local-first privacy architecture. Your client contracts, NDA-protected IP, and financial terms are never transmitted to cloud APIs.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 space-y-4">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300">Model Configuration</h3>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Inference Endpoint</label>
+            <input type="text" id="gemma-endpoint" value="http://localhost:11434" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1">Target Model Name</label>
+            <input type="text" id="gemma-model" value="gemma2:2b" class="w-full bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-xs text-white focus:outline-none">
+          </div>
+
+          <button id="btn-test-connection" class="w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition-colors flex items-center justify-center gap-2">
+            <span>Ping Local Gemma 2 Endpoint</span>
+          </button>
+        </div>
+
+        <div class="bg-slate-900 p-6 rounded-xl border border-slate-800 space-y-4">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-slate-300">Connection Diagnostics</h3>
+          <div id="model-diag-box" class="bg-slate-950 p-4 rounded-lg border border-slate-800/80 font-mono text-xs text-slate-300 space-y-2">
+            <div class="flex items-center gap-2">
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+              <span class="font-bold text-white">Engine Mode:</span>
+              <span id="diag-mode" class="text-emerald-300">Deterministic Gemma 2 Rule Engine (Ready)</span>
+            </div>
+            <div>
+              <span class="text-slate-500">Local Privacy:</span>
+              <span class="text-emerald-400">100% Offline Active</span>
+            </div>
+            <div>
+              <span class="text-slate-500">Ollama Status:</span>
+              <span id="diag-ollama" class="text-slate-400">Checking...</span>
+            </div>
+            <div class="pt-2 text-[11px] text-slate-400 font-sans border-t border-slate-800">
+              💡 <em>To enable live open weights locally: run <code>ollama run gemma2:2b</code> in your terminal. ScopeShield automatically leverages it when present.</em>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-slate-950 py-6 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <span>🛡️ <strong>ScopeShield AI</strong> — Open-Source Freelance Contract Guard</span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-400">
+        <span>Google Gemma 2 Open Weights</span>
+        <span>•</span>
+        <span>MIT License</span>
+        <span>•</span>
+        <span>DEV Challenge HF26</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
