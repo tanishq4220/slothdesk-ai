@@ -421,41 +421,61 @@ function initSanctuaryTab() {
   const btnCopyFable = document.getElementById('btn-copy-fable');
   const themeChips = document.querySelectorAll('.theme-chip');
 
-  // Sliders
+  // Sliders with immediate Web Audio gain response
   const slRain = document.getElementById('vol-rain');
   const slWind = document.getElementById('vol-wind');
   const slFire = document.getElementById('vol-fire');
   const slDrone = document.getElementById('vol-drone');
 
   slRain.addEventListener('input', e => {
-    document.getElementById('val-rain').textContent = `${e.target.value}%`;
-    if (rainGain) rainGain.gain.setValueAtTime(e.target.value / 100 * 0.4, audioCtx.currentTime);
+    const pct = parseInt(e.target.value, 10);
+    document.getElementById('val-rain').textContent = `${pct}%`;
+    const val = (pct / 100) * 0.8;
+    if (rainGain && audioCtx) {
+      rainGain.gain.setValueAtTime(val, audioCtx.currentTime);
+      rainGain.gain.value = val;
+    }
   });
   slWind.addEventListener('input', e => {
-    document.getElementById('val-wind').textContent = `${e.target.value}%`;
-    if (windGain) windGain.gain.setValueAtTime(e.target.value / 100 * 0.35, audioCtx.currentTime);
+    const pct = parseInt(e.target.value, 10);
+    document.getElementById('val-wind').textContent = `${pct}%`;
+    const val = (pct / 100) * 0.85;
+    if (windGain && audioCtx) {
+      windGain.gain.setValueAtTime(val, audioCtx.currentTime);
+      windGain.gain.value = val;
+    }
   });
   slFire.addEventListener('input', e => {
-    document.getElementById('val-fire').textContent = `${e.target.value}%`;
-    if (fireGain) fireGain.gain.setValueAtTime(e.target.value / 100 * 0.25, audioCtx.currentTime);
+    const pct = parseInt(e.target.value, 10);
+    document.getElementById('val-fire').textContent = `${pct}%`;
+    const val = (pct / 100) * 0.9;
+    if (fireGain && audioCtx) {
+      fireGain.gain.setValueAtTime(val, audioCtx.currentTime);
+      fireGain.gain.value = val;
+    }
   });
   slDrone.addEventListener('input', e => {
-    document.getElementById('val-drone').textContent = `${e.target.value}%`;
-    if (droneGain) droneGain.gain.setValueAtTime(e.target.value / 100 * 0.3, audioCtx.currentTime);
+    const pct = parseInt(e.target.value, 10);
+    document.getElementById('val-drone').textContent = `${pct}%`;
+    const val = (pct / 100) * 0.6;
+    if (droneGain && audioCtx) {
+      droneGain.gain.setValueAtTime(val, audioCtx.currentTime);
+      droneGain.gain.value = val;
+    }
   });
 
   // Toggle procedural audio
   btnToggle.addEventListener('click', () => {
     if (!isAudioPlaying) {
+      isAudioPlaying = true;
       startProceduralAudio();
       btnToggle.classList.add('playing');
       btnLabel.textContent = 'Pause Ambient Sanctuary';
-      isAudioPlaying = true;
     } else {
+      isAudioPlaying = false;
       pauseProceduralAudio();
       btnToggle.classList.remove('playing');
       btnLabel.textContent = 'Start Ambient Sanctuary';
-      isAudioPlaying = false;
     }
   });
 
@@ -482,33 +502,51 @@ function initSanctuaryTab() {
 }
 
 // Procedural Web Audio API Synthesis Engine (100% Offline, Zero Network Audio Files)
-function startProceduralAudio() {
+let audioNodesInitialized = false;
+
+async function startProceduralAudio() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
   }
   if (audioCtx.state === 'suspended') {
-    audioCtx.resume();
+    try {
+      await audioCtx.resume();
+    } catch (e) {
+      console.warn('AudioContext resume:', e);
+    }
   }
 
+  if (audioNodesInitialized) {
+    if (!fireTimer && isAudioPlaying) {
+      scheduleCrackle();
+    }
+    return;
+  }
+  audioNodesInitialized = true;
+
+  // Create clean master gain
   masterGain = audioCtx.createGain();
-  masterGain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+  masterGain.gain.setValueAtTime(0.85, audioCtx.currentTime);
   masterGain.connect(audioCtx.destination);
 
-  // 1. Rain Synthesizer (Pink noise buffer filtered through low-pass)
   const bufferSize = audioCtx.sampleRate * 2;
+
+  // -------------------------------------------------------------
+  // 1. Rain Synthesizer (Filtered Pink Noise)
+  // -------------------------------------------------------------
   const rainBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
   const rainData = rainBuffer.getChannelData(0);
-  let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+  let rb0 = 0, rb1 = 0, rb2 = 0, rb3 = 0, rb4 = 0, rb5 = 0, rb6 = 0;
   for (let i = 0; i < bufferSize; i++) {
     const white = Math.random() * 2 - 1;
-    b0 = 0.99886 * b0 + white * 0.0555179;
-    b1 = 0.99332 * b1 + white * 0.0750759;
-    b2 = 0.96900 * b2 + white * 0.1538520;
-    b3 = 0.86650 * b3 + white * 0.3104856;
-    b4 = 0.55000 * b4 + white * 0.5329522;
-    b5 = -0.7616 * b5 - white * 0.0168980;
-    rainData[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.04;
-    b6 = white * 0.115926;
+    rb0 = 0.99886 * rb0 + white * 0.0555179;
+    rb1 = 0.99332 * rb1 + white * 0.0750759;
+    rb2 = 0.96900 * rb2 + white * 0.1538520;
+    rb3 = 0.86650 * rb3 + white * 0.3104856;
+    rb4 = 0.55000 * rb4 + white * 0.5329522;
+    rb5 = -0.7616 * rb5 - white * 0.0168980;
+    rainData[i] = (rb0 + rb1 + rb2 + rb3 + rb4 + rb5 + rb6 + white * 0.5362) * 0.06;
+    rb6 = white * 0.115926;
   }
 
   rainNode = audioCtx.createBufferSource();
@@ -517,10 +555,10 @@ function startProceduralAudio() {
 
   const rainFilter = audioCtx.createBiquadFilter();
   rainFilter.type = 'lowpass';
-  rainFilter.frequency.setValueAtTime(850, audioCtx.currentTime);
+  rainFilter.frequency.setValueAtTime(950, audioCtx.currentTime);
 
   rainGain = audioCtx.createGain();
-  const rainVol = parseInt(document.getElementById('vol-rain')?.value || 45) / 100 * 0.4;
+  const rainVol = (parseInt(document.getElementById('vol-rain')?.value || 45, 10) / 100) * 0.7;
   rainGain.gain.setValueAtTime(rainVol, audioCtx.currentTime);
 
   rainNode.connect(rainFilter);
@@ -528,11 +566,16 @@ function startProceduralAudio() {
   rainGain.connect(masterGain);
   rainNode.start();
 
-  // 2. Wind Synthesizer (Bandpass filter with slow LFO modulator)
+  // -------------------------------------------------------------
+  // 2. Canopy Breeze (Lush Brown Noise + Dynamic Sweeping Bandpass)
+  // -------------------------------------------------------------
   const windBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
   const windData = windBuffer.getChannelData(0);
+  let lastBrown = 0;
   for (let i = 0; i < bufferSize; i++) {
-    windData[i] = (Math.random() * 2 - 1) * 0.05;
+    const white = Math.random() * 2 - 1;
+    lastBrown = (lastBrown + (0.025 * white)) / 1.025;
+    windData[i] = lastBrown * 2.8; // Rich, resonant brownian noise floor
   }
 
   windNode = audioCtx.createBufferSource();
@@ -541,20 +584,20 @@ function startProceduralAudio() {
 
   const windFilter = audioCtx.createBiquadFilter();
   windFilter.type = 'bandpass';
-  windFilter.frequency.setValueAtTime(320, audioCtx.currentTime);
-  windFilter.Q.setValueAtTime(3.0, audioCtx.currentTime);
+  windFilter.frequency.setValueAtTime(420, audioCtx.currentTime);
+  windFilter.Q.setValueAtTime(1.8, audioCtx.currentTime);
 
-  // LFO for slow canopy swell
+  // Slow LFO for natural canopy swell (0.1Hz = 10 second wave)
   const windLfo = audioCtx.createOscillator();
-  windLfo.frequency.setValueAtTime(0.12, audioCtx.currentTime); // ~8 sec wave
+  windLfo.frequency.setValueAtTime(0.1, audioCtx.currentTime);
   const windLfoGain = audioCtx.createGain();
-  windLfoGain.gain.setValueAtTime(140, audioCtx.currentTime);
+  windLfoGain.gain.setValueAtTime(260, audioCtx.currentTime);
   windLfo.connect(windLfoGain);
   windLfoGain.connect(windFilter.frequency);
   windLfo.start();
 
   windGain = audioCtx.createGain();
-  const windVol = parseInt(document.getElementById('vol-wind')?.value || 30) / 100 * 0.35;
+  const windVol = (parseInt(document.getElementById('vol-wind')?.value || 30, 10) / 100) * 0.85;
   windGain.gain.setValueAtTime(windVol, audioCtx.currentTime);
 
   windNode.connect(windFilter);
@@ -562,42 +605,48 @@ function startProceduralAudio() {
   windGain.connect(masterGain);
   windNode.start();
 
-  // 3. Hearthside Fire Crackle (Procedural periodic pops)
+  // -------------------------------------------------------------
+  // 3. Hearthside Fire Crackle (Ember Bed + Dynamic Wood Snaps & Pops)
+  // -------------------------------------------------------------
   fireGain = audioCtx.createGain();
-  const fireVol = parseInt(document.getElementById('vol-fire')?.value || 20) / 100 * 0.25;
+  const fireVol = (parseInt(document.getElementById('vol-fire')?.value || 25, 10) / 100) * 0.9;
   fireGain.gain.setValueAtTime(fireVol, audioCtx.currentTime);
   fireGain.connect(masterGain);
 
-  function scheduleCrackle() {
-    if (!isAudioPlaying || !audioCtx) return;
-    const now = audioCtx.currentTime;
-    const osc = audioCtx.createOscillator();
-    const g = audioCtx.createGain();
-    osc.type = 'triangle';
-    osc.frequency.setValueAtTime(180 + Math.random() * 320, now);
-    g.gain.setValueAtTime(0.2, now);
-    g.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
-    osc.connect(g);
-    g.connect(fireGain);
-    osc.start(now);
-    osc.stop(now + 0.04);
-
-    const nextDelay = 120 + Math.random() * 450;
-    fireTimer = setTimeout(scheduleCrackle, nextDelay);
+  // 3a. Continuous gentle ember bed (low rumble/hiss)
+  const emberBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const emberData = emberBuffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    emberData[i] = (Math.random() * 2 - 1) * 0.04;
   }
-  scheduleCrackle();
+  const emberNode = audioCtx.createBufferSource();
+  emberNode.buffer = emberBuffer;
+  emberNode.loop = true;
+  const emberFilter = audioCtx.createBiquadFilter();
+  emberFilter.type = 'lowpass';
+  emberFilter.frequency.setValueAtTime(450, audioCtx.currentTime);
+  emberNode.connect(emberFilter);
+  emberFilter.connect(fireGain);
+  emberNode.start();
 
-  // 4. 432Hz Calm Alpha Drone (Pure meditative foundation)
+  // Start the continuous crackle scheduler
+  if (!fireTimer) {
+    scheduleCrackle();
+  }
+
+  // -------------------------------------------------------------
+  // 4. 432Hz Calm Alpha Drone (Pure Meditative Foundation)
+  // -------------------------------------------------------------
   droneOsc = audioCtx.createOscillator();
   droneOsc.type = 'sine';
-  droneOsc.frequency.setValueAtTime(432 / 4, audioCtx.currentTime); // Sub-bass 108Hz octave of 432Hz
+  droneOsc.frequency.setValueAtTime(108, audioCtx.currentTime); // Sub-bass octave of 432Hz
 
   const droneOsc2 = audioCtx.createOscillator();
   droneOsc2.type = 'sine';
-  droneOsc2.frequency.setValueAtTime((432 / 4) + 1.5, audioCtx.currentTime); // 1.5Hz binaural alpha beat
+  droneOsc2.frequency.setValueAtTime(109.5, audioCtx.currentTime); // 1.5Hz binaural alpha pulsation
 
   droneGain = audioCtx.createGain();
-  const droneVol = parseInt(document.getElementById('vol-drone')?.value || 25) / 100 * 0.3;
+  const droneVol = (parseInt(document.getElementById('vol-drone')?.value || 25, 10) / 100) * 0.5;
   droneGain.gain.setValueAtTime(droneVol, audioCtx.currentTime);
 
   droneOsc.connect(droneGain);
@@ -608,18 +657,47 @@ function startProceduralAudio() {
   droneOsc2.start();
 }
 
+// Stochastic wood pops and snaps
+function scheduleCrackle() {
+  if (!isAudioPlaying || !audioCtx || audioCtx.state !== 'running') return;
+  const now = audioCtx.currentTime;
+
+  // Generate either a sharp high snap or a warm wooden thump
+  const isSnap = Math.random() > 0.35;
+  const osc = audioCtx.createOscillator();
+  const snapGain = audioCtx.createGain();
+
+  if (isSnap) {
+    // High timber snap / spark (1200Hz - 3400Hz)
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(1200 + Math.random() * 2200, now);
+    snapGain.gain.setValueAtTime(0.4 + Math.random() * 0.35, now);
+    snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+  } else {
+    // Deep wood log settling thump (180Hz - 480Hz)
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(180 + Math.random() * 300, now);
+    snapGain.gain.setValueAtTime(0.45 + Math.random() * 0.3, now);
+    snapGain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+  }
+
+  osc.connect(snapGain);
+  snapGain.connect(fireGain);
+
+  osc.start(now);
+  osc.stop(now + 0.06);
+
+  // Schedule next crackle between 60ms and 220ms
+  const nextInterval = 60 + Math.random() * 160;
+  fireTimer = setTimeout(scheduleCrackle, nextInterval);
+}
+
 function pauseProceduralAudio() {
-  if (fireTimer) clearTimeout(fireTimer);
-  if (rainNode) {
-    try { rainNode.stop(); } catch {}
+  if (fireTimer) {
+    clearTimeout(fireTimer);
+    fireTimer = null;
   }
-  if (windNode) {
-    try { windNode.stop(); } catch {}
-  }
-  if (droneOsc) {
-    try { droneOsc.stop(); } catch {}
-  }
-  if (audioCtx) {
+  if (audioCtx && audioCtx.state === 'running') {
     audioCtx.suspend();
   }
 }
