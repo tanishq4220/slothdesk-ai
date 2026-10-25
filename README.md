@@ -1,181 +1,196 @@
-# 🛡️ ScopeShield AI
+# 🦥 SlothDesk AI
 
-> **Privacy-Preserving Freelance Contract Risk Auditor & Scope Creep Defense Engine — Powered by Google Gemma 2**
-
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Hacktoberfest 2026](https://img.shields.io/badge/Hacktoberfest-Week%202%3A%20Side%20Hustle-orange.svg)](https://dev.to/challenges/hacktoberfest-week2-2026-10-12)
-[![Model: Google Gemma 2](https://img.shields.io/badge/Model-Google%20Gemma%202-purple.svg)](https://ai.google.dev/gemma)
-[![Privacy: 100% Local](https://img.shields.io/badge/Privacy-100%25%20Local%20Inference-emerald.svg)](#privacy-first-local-architecture)
+> **The Anti-Burnout Desktop Assistant That Rewards Laziness.**  
+> *Channel your inner sloth. Automate the dread, compress unread chat noise, draft diplomatic calendar boundaries, auto-tidy desktop clutter, and wind down with offline soundscapes & bedtime micro-fables.*  
+> **100% Local-First • Zero Cloud Byte Leakage • $0.00 Runtime Overhead • Powered by Google Gemma 2 (Open Weights)**
 
 ---
 
-## 🎯 Executive Summary & The Side Hustle Opportunity
+Built with pride for the **[Hacktoberfest 2026: Open-Source AI Challenge — Week 3: Slow and Steady](https://dev.to/challenges/hacktoberfest-week3-2026-10-19)** in celebration of **International Sloth Day** and DEV's beloved mascot **Sloan the Sloth**.
 
-Freelancers, solopreneurs, and independent contractors face a silent margin killer: **Scope Creep and Predatory Contracts**. 
-
-According to freelance industry surveys, over **68% of freelancers lose 4 to 8 billable hours every week** doing unbilled revisions, waiting on Net-90 delayed disbursements, or fighting ambiguous client briefs. A single bad clause—such as unlimited revisions or pre-payment IP forfeiture—can cost an independent specialist **$2,500 to $10,000+** in lost income.
-
-Yet hiring an attorney costs **$350 to $600/hour**, putting professional contract review out of reach for routine client proposals.
-
-### Why Existing Cloud LLMs Fail Freelancers
-When freelancers paste confidential client briefs, master services agreements (MSAs), or unreleased product roadmaps into public cloud LLMs (OpenAI, Anthropic):
-1. **They breach Client Non-Disclosure Agreements (NDAs)**: Commercial client contracts strictly prohibit transmitting confidential specifications or proprietary data to third-party model servers.
-2. **Per-Token Cost Erosion**: High token pricing on 40-page contract documents eats 30-50% of software margins for solo side hustlers.
-
-**ScopeShield AI** solves this with **Google's open-weight Gemma 2 model**, running 100% locally on your machine. Client contracts, trade secrets, and financials never leave your hardware.
+[![License: MIT](https://img.shields.io/badge/License-MIT-emerald.svg)](LICENSE)
+[![Model: Google Gemma 2](https://img.shields.io/badge/Open--Weight-Google%20Gemma%202%20(2B%20%7C%209B)-blue.svg)](https://ai.google.dev/gemma)
+[![Node.js Tests](https://img.shields.io/badge/Tests-5%2F5%20Passing-brightgreen.svg)](test/slothdesk.test.js)
+[![Offline Web Audio](https://img.shields.io/badge/Web%20Audio-100%25%20Offline%20Procedural-amber.svg)](public/app.js)
 
 ---
 
-## ✨ Key Features
+## 🦥 The Sloth Philosophy: Radical Energy Conservation
 
-### 1. 🔍 6-Pillar Contract Risk Auditor
-Evaluates agreements against the 6 critical vectors of freelance financial exposure:
-- **Scope & Deliverable Boundaries**: Detects open-ended traps ("as needed", "whatever graphics", informal Slack iteration).
-- **Revision Limits & Out-of-Scope Fees**: Flags predatory "unlimited revisions until client satisfaction" and injects enforceable round caps.
-- **Payment Terms & Retainage**: Flags Net-60 / Net-90 payment lags, unfair retainage holdbacks, and missing upfront deposits.
-- **Intellectual Property Rights**: Guards against pre-payment IP forfeiture, ensuring ownership passes *strictly upon full, cleared payment*.
-- **Termination & Kill Fees**: Enforces non-refundable deposits and prorated compensation for partial milestone deliveries.
-- **Liability Caps & Non-Competes**: Neutralizes unlimited indemnification clauses and strikes restrictive freelance non-competes.
+Tomorrow, October 20, is **International Sloth Day**. In human culture, sloths are often misunderstood as "lazy." In evolutionary biology, however, sloths (*Bradypus tridactylus*) represent nature’s ultimate endurance masters:
+- They move at **0.15 miles per hour**.
+- They conserve **over 90% of their metabolic energy** compared to typical mammals of their size.
+- They cultivate micro-ecosystems of green algae in their fur that camouflage them from predators and synthesize nutrients without extra effort.
+- They **never rush, never overthink, and outlast faster competitors**.
 
-### 2. 📝 Bulletproof SOW & Proposal Generator
-Turns rough client notes into a structured, production-grade Statement of Work:
-- Explicit In-Scope checklists vs. Out-of-Scope exclusions (Exhibit A & B).
-- 3-tranche milestone payment schedule (50% Kickoff Deposit, 25% Staging Demo, 25% Production Sign-off).
-- Standardized 5-business-day deemed approval windows.
-- Clear Change Order rate schedule ($110/hr).
+In the modern knowledge economy, workers, developers, and creators squander up to **70% of their daily cognitive energy** on low-value, high-anxiety digital friction:
+1. Sifting through **200+ unread messages** across Slack, Discord, and family group chats just to answer: *"Is anyone actually waiting on me?"*
+2. Agonizing over how to politely decline **unnecessary 45-minute Zoom syncs** and weekend "quick favors."
+3. Staring hopelessly at a Downloads folder filled with **400 chaotic screenshots, invoices, and vague files**.
+4. Lying awake at midnight with racing thoughts because the workday never formally decelerated.
 
-### 3. ✉️ Assertive Client Negotiation & Pushback Drafter
-Generates diplomatic, high-status client emails for sticky situations:
-- Pushing back against unlimited revisions.
-- Handling mid-sprint out-of-scope requests with an instant Change Order quote.
-- Requiring a 50% deposit before kickoff.
-- Transitioning clients from Net-90 to Net-14 payment terms.
-- Overdue milestone payment reminders (friendly, firm, or escalation).
-
-### 4. 💰 Scope Creep ROI Calculator
-Interactive financial modeling showing the exact annual cost of unbilled revisions. Shows how a $29/mo ScopeShield subscription yields a **6,000%+ ROI** by reclaiming 200+ hours of lost billable work.
-
-### 5. ⚡ Dual-Engine Architecture
-- **Primary:** Google Gemma 2 (2B / 9B) open weights running locally via Ollama / vLLM with `<start_of_turn>` Gemma instruction formatting.
-- **Instant Fallback:** High-precision deterministic heuristic rules engine ensuring 0ms cold starts with zero external dependencies.
+**SlothDesk AI was built to automate the cognitive chores you dread, allowing you to move at your own pace and conserve your mental output.**
 
 ---
 
-## 🏗️ Architecture & System Design
+## 🏛️ System Architecture & Gemma 2 Harness
 
-```mermaid
-flowchart TD
-    subgraph Client["💻 Freelancer Local Device"]
-        UI["🖥️ ScopeShield Modern Dashboard (Vite / Tailwind)"]
-        LocalStorage["🗄️ Local IndexedDB & Cache"]
-    end
+```
+                           ┌──────────────────────────────────────────────┐
+                           │               🦥 SlothDesk AI                │
+                           │   Local-First Anti-Burnout Desktop System    │
+                           └──────────────────────┬───────────────────────┘
+                                                  │
+          ┌───────────────────┬───────────────────┴───────────────────┬───────────────────┐
+          ▼                   ▼                                       ▼                   ▼
+  ┌───────────────┐   ┌───────────────┐                       ┌───────────────┐   ┌───────────────┐
+  │  SlothDigest  │   │  SlothReply   │                       │   SlothSort   │   │SlothSanctuary │
+  │ 60-Sec Brief &│   │  Low-Energy   │                       │  Auto-Folder  │   │Offline Audio  │
+  │ 1-Click Reply │   │ Boundary Wall │                       │& Script Maker │   │& Bedtime Story│
+  └───────┬───────┘   └───────┬───────┘                       └───────┬───────┘   └───────┬───────┘
+          │                   │                                       │                   │
+          └───────────────────┴───────────────────┬───────────────────┴───────────────────┘
+                                                  │
+                                                  ▼
+                                      ┌───────────────────────┐
+                                      │   Gemma Engine Core   │
+                                      │  Turn Token Formatter │
+                                      └───────────┬───────────┘
+                                                  │
+                         ┌────────────────────────┴────────────────────────┐
+                         ▼                                                 ▼
+            ┌───────────────────────────┐                     ┌───────────────────────────┐
+            │    Local Ollama / vLLM    │                     │   Deterministic Heuristic │
+            │  gemma2:2b / gemma2:9b    │                     │      Replica (0ms Fallback)│
+            │   (Offline Local Model)   │                     │  (Zero-Dependency Guard)  │
+            └───────────────────────────┘                     └───────────────────────────┘
+```
 
-    subgraph Server["⚡ Local Node.js Express Runtime"]
-        API["📡 REST Endpoints (/api/audit, /api/sow, /api/email)"]
-        Auditor["⚖️ 6-Pillar Risk Scoring Engine"]
-        SOWGen["📝 SOW Proposal Generator"]
-        EmailGen["✉️ Pushback Drafter"]
-        Heuristics["🛡️ Deterministic Legal Rules Matrix"]
-    end
+### Official Gemma 2 Instruction Turn Tokens
+SlothDesk formats all prompts adhering to Google's official Gemma 2 instruction token standard:
 
-    subgraph OpenWeights["🧠 Open-Weight AI Core"]
-        GemmaAdapter["🔌 Gemma 2 Turn Formatter"]
-        OllamaLocal["🦙 Local Ollama / vLLM Endpoint (gemma2:2b / 9b)"]
-    end
+```text
+<start_of_turn>user
+[SYSTEM CONTEXT: You are SlothDesk's Chat Digest Agent, inspired by International Sloth Day.
+Your goal is radical cognitive energy conservation. The user is a developer who hates reading through group chat noise.
+Analyze the unread thread and output:
+1. "The 60-Second Truth" (Maximum 3 blunt bullet points).
+2. "Is Anyone Waiting On You?" (List people who mentioned the user or asked direct questions).
+3. "One-Click Lazy Replies" (2 ready-to-copy, polite responses the user can send with zero typing effort).]
 
-    UI -->|1. Submit Contract / Brief| API
-    API --> Auditor
-    API --> SOWGen
-    API --> EmailGen
-    Auditor --> Heuristics
-    Auditor --> GemmaAdapter
-    GemmaAdapter -->|2. Local Offline Inference| OllamaLocal
-    OllamaLocal -->|3. Risk Analysis & Reasoning| GemmaAdapter
-    GemmaAdapter --> Auditor
-    Auditor -->|4. Risk Score, Flags & Shields| UI
-    UI <--> LocalStorage
-
-    classDef accent fill:#4f46e5,stroke:#818cf8,stroke-width:2px,color:#fff;
-    classDef open fill:#059669,stroke:#34d399,stroke-width:2px,color:#fff;
-    class UI,Server,API accent;
-    class OpenWeights,OllamaLocal,GemmaAdapter open;
+Here is the unread message thread:
+${rawText}
+<end_of_turn>
+<start_of_turn>model
 ```
 
 ---
 
-## 💡 Why Open Innovation Matters
+## ⚡ The Four Sloth Modules
 
-### 1. Client NDA Compliance & Absolute Privacy
-Freelancers routinely sign enterprise Non-Disclosure Agreements. Pasting client contracts or unreleased software scopes into closed commercial APIs (OpenAI, Anthropic) risks breaching client NDAs. By relying on **Google's open-weight Gemma 2 model**, ScopeShield runs entirely on localhost—no client data ever touches an external cloud server.
+### 1. `SlothDigest` — Overnight Chat & Thread Synthesizer
+- **The Problem**: Opening Slack or WhatsApp in the morning to 45 unread messages produces an immediate cortisol spike.
+- **The Sloth Solution**: Dump the raw chat log into SlothDesk. Gemma 2 immediately returns:
+  - **The 60-Second Truth**: 2 to 3 blunt, high-signal bullet points explaining what actually happened.
+  - **Is Anyone Waiting on You?**: Identifies specific stakeholders and direct questions, or explicitly confirms: *"No blockers — you are free to do nothing."*
+  - **One-Click Lazy Replies**: Pre-formulated, polite responses you can copy with 1 click without typing a single word.
 
-### 2. Viable Solo SaaS Unit Economics
-Closed APIs charge per token. A single 25-page legal agreement contains ~15,000 tokens. Running closed models on long contracts would quickly eat into margins. With open-weight Gemma 2 deployed on local hardware or flat-rate self-hosted nodes:
-- **Marginal inference cost: $0.00**.
-- **Gross Profit Margin: 98%+**.
-This transforms an idea into a sustainable, highly profitable solo side hustle.
+### 2. `SlothReply` — Diplomatic Low-Energy Boundary Drafter
+- **The Problem**: Saying "no" to a 45-minute sync or a weekend "quick favor" creates immense social anxiety and awkwardness.
+- **The Sloth Solution**: Input the dreaded incoming request and select your **Energy Conservation Level**:
+  - *Minimalist* (ultra-terse, under 20 words)
+  - *Courteous Zen* (diplomatic, warm, async-first)
+  - *Ironclad Perimeter* (unbreachable calendar guard)
+- Gemma 2 crafts the exact email subject, body, and **Sloth Principle** explanation, shifting synchronous meetings into lightweight async notes.
 
-### 3. Model Customization & Local Fine-Tuning
-Open weights allow fine-tuning on regional legal frameworks (e.g. California *Freelance Isn't Free Act*, UK IR35 regulations, European copyright directives) without risk of vendor deprecation or arbitrary policy shutdowns.
+### 3. `SlothSort` — Zero-Effort File & Desktop Clutter Tamer
+- **The Problem**: Desktop and Downloads folders accumulate hundreds of chaotic files (`Screenshot 2026-10-18 at 11.42.09.png`, `uber_receipt_oct.pdf`, `contract_v2_final_FINAL.docx`).
+- **The Sloth Solution**: Paste your file list or directory dump. SlothSort:
+  - Organizes files into clean taxonomies (`01-Finance`, `02-Legal`, `03-Design`, `04-Engineering`, `05-Notes`).
+  - Proposes standardized, ISO-prefixed normalized filenames (`2026-10-25-receipt-uber-transport.pdf`).
+  - Auto-generates **executable 1-click PowerShell & Bash scripts** so your terminal tidies everything in 1 second.
+
+### 4. `SlothSanctuary` — Offline Wind-Down & Ambient Drift Engine
+- **Procedural Web Audio API Synthesizer (Zero Network Payload)**:
+  - Real-time mathematical synthesis of:
+    - *Monteverde Rain* (pink noise buffer through low-pass frequency filtering)
+    - *Canopy Breeze* (bandpass filter with slow 0.12 Hz LFO swell)
+    - *Hearthside Crackle* (procedural stochastic impulse pops)
+    - *432Hz Alpha Calm Drone* (pure sine foundation with 1.5Hz binaural alpha beat)
+  - Completely offline; zero MP3 downloads or streaming bandwidth.
+- **Bedtime Micro-Fables**:
+  - Slow-cadence, low-stimulus bedtime stories generated by Gemma 2, calibrated specifically to reduce heart rate (42–48 BPM target) and release mental tension.
 
 ---
 
-## 🚀 Quickstart & Local Installation
+## 🌿 Why Open Innovation Matters
+
+### 1. Confidential Data Stays on Your Machine
+Group chats, unfiled Downloads folders, and invoices contain confidential client names, internal API credentials, and personal financial data. Pasting them into closed commercial cloud APIs breaches privacy standards and client NDAs. With Google Gemma 2 running locally, **zero bytes ever leave your laptop**.
+
+### 2. $0.00 Marginal Cost Forever
+Closed commercial APIs charge per thousand tokens. Digesting long chat logs (5,000+ tokens) and sorting directories daily would easily rack up $15–$30/month in subscription costs. Open weights give you permanent, unmetered intelligence with **zero recurring costs**.
+
+### 3. True Offline Resilience
+Sloths don't rely on cell towers, and neither should your workspace tools. SlothDesk runs seamlessly on flights, remote cabins, or subway commutes without requiring an active internet connection.
+
+---
+
+## 🚀 Quickstart
 
 ### Prerequisites
-- Node.js v18+ (tested on v24)
-- npm v9+
+- Node.js v18+ (tested on Node v20 & v24)
+- (Optional for local weights) [Ollama](https://ollama.com/) with `ollama run gemma2:2b`
 
-### 1. Clone & Install
+### Installation
 ```bash
-git clone https://github.com/tanishq4220/scopeshield-ai.git
-cd scopeshield-ai
+# Clone the repository
+git clone https://github.com/tanishq4220/slothdesk-ai.git
+cd slothdesk-ai
+
+# Install dependencies (only Express and CORS)
 npm install
 ```
 
-### 2. Run Test Suite
-```bash
-npm test
-```
-All 4 test suites verify contract risk scoring, predatory clause detection, SOW generation, and email drafting.
-
-### 3. Start the Server
+### Running the Application
 ```bash
 npm start
 ```
-Open your browser to: **`http://localhost:3000`**
+Open your browser at **`http://localhost:3000`** to experience the art-directed SlothDesk interface!
 
-### 4. (Optional) Run Live Gemma 2 Open Weights
-To run live open-weight Gemma 2 locally:
+### Running the Test Suite
 ```bash
-# In another terminal window:
-ollama run gemma2:2b
+npm test
 ```
-ScopeShield AI automatically detects the Ollama instance at `http://localhost:11434` and enriches contract audits with Gemma 2 reasoning. If Ollama is not installed, ScopeShield seamlessly uses its integrated deterministic local engine.
-
----
-
-## 💼 Side Hustle Business Model
-
-| Plan | Target Audience | Price | Key Features |
-| :--- | :--- | :--- | :--- |
-| **Starter (Free)** | Part-time freelancers | $0 | 3 Contract Audits / month, standard SOW generator |
-| **Freelance Pro** | Full-time freelancers & contractors | **$29 / month** | Unlimited Contract Audits, Live Gemma 2 Analysis, Custom SOW exports, Email Drafter |
-| **Agency Studio** | Boutique design & dev shops | **$79 / month** | Multi-seat, branded SOW PDFs, custom hourly rate calculators |
-
----
-
-## 🧪 Test Suite Coverage
-
-```
-✔ Contract Auditor detects predatory clauses in MSA preset (2.47ms)
-✔ Contract Auditor scores balanced protected SOW as safe (0.37ms)
-✔ SOW Generator creates structured milestones and deposit schedule (29.1ms)
-✔ Negotiation Email Drafter formats polite and firm pushback (0.34ms)
-ℹ tests 4, pass 4, fail 0
+```text
+✔ GemmaEngine formats official Gemma 2 instruction tokens (0.93ms)
+✔ DigestEngine compresses unread engineering slack logs into actionable signals (41.29ms)
+✔ ReplyEngine drafts polite async deferral for 45-min Zoom request (3.69ms)
+✔ SortEngine organizes messy files into categorized taxonomy and generates scripts (3.91ms)
+✔ SanctuaryEngine generates low-cadence bedtime micro-fable for International Sloth Day (4.03ms)
+ℹ tests 5, pass 5, fail 0
 ```
 
 ---
 
-## 📜 License
+## 🎨 Design System & Aesthetic Craftsmanship
 
-Distributed under the **MIT License**. See [`LICENSE`](LICENSE) for details. Built for the **Hacktoberfest 2026 Open-Source AI Challenge: Week 2 (Side Hustle)**.
+SlothDesk was designed under strict art-direction principles to reject generic "AI SaaS" templates:
+- **No purple-to-blue gradients**, floating glowing orbs, or generic card grids.
+- **Warm Alabaster Canvas** (`#FAF8F5`) paired with **Carbon Ink** (`#1C1917`) and **Botanical Forest Moss** (`#2B4C38`).
+- Editorial typography pairing **Fraunces** serif with **Plus Jakarta Sans** and **JetBrains Mono**.
+- Asymmetric Swiss-inspired editorial grids with tactile tab indicators and subtle borders (`#E7E3D8`).
+
+---
+
+## 🏆 Hacktoberfest 2026 Prize Categories
+
+- **Best Use of Gemma ($200 Featured Category)**: Core architecture built natively around Google Gemma 2 open weights (`gemma2:2b` / `9b`), instruction turn formatting, and offline local inference.
+- **Overall Winner ($250)**: A deeply thoughtful, fully functional, beautifully art-directed open-source AI project that celebrates International Sloth Day and solves a universal modern pain point.
+
+---
+
+## 📄 License
+
+Licensed under the permissive **[MIT License](LICENSE)**.  
+Crafted with ❤️ by **[Tanishq Wankhede](https://github.com/tanishq4220)** for Hacktoberfest 2026.

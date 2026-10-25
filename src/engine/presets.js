@@ -1,86 +1,101 @@
 /**
- * ScopeShield AI - Contract & Scope Presets
- * Realistic freelance agreements and client briefs for demonstration and testing.
+ * SlothDesk AI - Curated Presets for 1-Click Zero-Effort Demos
  */
 
-export const PRESETS = [
-  {
-    id: "predatory-msa",
-    name: "Predatory Web Dev Agreement (High Risk - Score: ~88)",
-    badge: "High Risk / Predatory",
-    category: "Software Development",
-    description: "Real-world MSA containing unlimited revisions, Net 90 payment, pre-payment IP transfer, and broad indemnification.",
-    text: `MASTER SERVICES AGREEMENT - CONTRACTOR ENGAGEMENT
-
-1. SCOPE OF SERVICES & DELIVERABLES
-Contractor agrees to design, build, test, and deploy a full-stack SaaS customer portal and mobile responsive web application. Contractor shall provide all necessary labor, code, and documentation to complete the project to Client's sole subjective satisfaction.
-
-2. REVISIONS AND ACCEPTANCE
-Client shall have unlimited revision requests until the deliverables meet the complete aesthetic and functional approval of Client's executive committee. Contractor shall complete all revisions within forty-eight (48) hours of receipt at no additional charge.
-
-3. COMPENSATION & PAYMENT TERMS
-Client shall pay Contractor a fixed fee of $6,500. Payment shall be made Net 90 days following final written acceptance of the completed deployment by Client. Client reserves the right to withhold twenty percent (20%) of the final fee for ninety (90) days post-launch as a bug-free performance warranty.
-
-4. INTELLECTUAL PROPERTY RIGHTS
-All work product, code, designs, algorithms, architectures, and preliminary sketches created by Contractor shall be deemed 'work made for hire' and shall become the immediate and exclusive property of Client from the moment of conception, regardless of whether final compensation has been remitted. Contractor waives all moral rights and claims to pre-existing code libraries.
-
-5. TERMINATION
-Client may terminate this Agreement at any time, with or without cause, upon twenty-four (24) hours email notice. In the event of termination, Contractor shall receive no compensation for hours invested in incomplete milestones and shall return all fees previously disbursed.
-
-6. INDEMNIFICATION AND WARRANTIES
-Contractor warrants that all deliverables will be 100% bug-free for a period of twelve (12) months. Contractor agrees to defend, indemnify, and hold harmless Client, its officers, affiliates, and customers against any and all claims, damages, liabilities, losses, and legal fees arising out of the software, performance, or delays, without limitation.
-
-7. NON-COMPETE RESTRICTIONS
-During the term of this Agreement and for a period of twenty-four (24) months following termination, Contractor shall not directly or indirectly provide consulting, engineering, or design services to any entity operating in the cloud software or web technology sector.`
+export const PRESETS = {
+  digest: {
+    engineeringSlack: {
+      title: "Late-Night Engineering Slack Storm (38 Messages)",
+      rawText: `[23:14] Alex Chen: @channel Heads up, the Postgres migration on staging threw a deadlock on table user_sessions_v3.
+[23:16] Sarah Jenkins: Wait what? Did the PR from Liam get merged before the index was created?
+[23:17] Liam Miller: No, my PR was just adding the nullable metadata column. It shouldn't lock sessions unless active transactions were held.
+[23:20] Alex Chen: Well staging is stuck. We have 40 queued jobs timing out.
+[23:22] David K: Who has write access to the AWS RDS staging cluster? I'm on mobile right now.
+[23:25] Sarah Jenkins: @tanishq can you check the migration lock script when you see this? You wrote the rollback procedure last sprint.
+[23:29] Alex Chen: If Tanishq isn't online, we might need to kill connection 4912 manually.
+[23:31] Liam Miller: Wait, killing 4912 could leave the schema in an inconsistent migration state.
+[23:35] Sarah Jenkins: Agreed. Let's not touch it until Tanishq verifies or until 9am standup. Staging isn't customer-facing tonight anyway.
+[23:38] Alex Chen: Fine. Staging is paused. @tanishq just drop a 1-line note in the morning confirming if we should run "npm run migrate:abort".
+[23:42] Liam Miller: Going to bed. See everyone at 10am.`
+    },
+    familyWhatsApp: {
+      title: "Family Vacation Planning Panic (45 Messages)",
+      rawText: `[14:02] Mom: Everyone! What time is our flight to Denver on Friday??
+[14:05] Dad: I thought Priya booked the 2:15 PM flight?
+[14:08] Priya: No, I said the 2:15 was $180 more expensive so I booked the 5:40 PM evening flight!
+[14:10] Uncle Joe: Wait, if you land at 7:30 PM we will miss the car rental counter in terminal B!
+[14:14] Priya: The counter closes at 11 PM Uncle Joe, I called them yesterday.
+[14:18] Mom: Are we staying in the cabin or the hotel near the lake?
+[14:22] Dad: Tanishq has the Airbnb confirmation code. Tanishq where is the address?
+[14:26] Priya: @tanishq please send the door code and grocery preferences before tonight so Dad can make the Costco run!
+[14:31] Uncle Joe: Also do we need snow chains for the SUV? It might drop below 32 degrees in the pass.
+[14:35] Mom: Someone please just confirm: what do I need to pack for Friday dinner?`
+    },
+    clientFeedback: {
+      title: "Client Scope & Feedback Ambush (29 Messages)",
+      rawText: `[10:15] Marcus (Client): Hey team, just reviewed the staging build. Love the direction!
+[10:18] Marcus (Client): Quick question: could we also add real-time PDF invoice generation before Friday's launch?
+[10:22] Marcus (Client): Also the founder showed it to his board, and they think the checkout button should be dark forest green instead of black.
+[10:26] Marcus (Client): And can we integrate Apple Pay and Stripe subscriptions? We might want recurring billing on day 1.
+[10:31] Marcus (Client): @tanishq let me know if you can hop on a quick 30-min Zoom call this afternoon to walk through the revised spec!`
+    }
   },
-  {
-    id: "vague-creative-brief",
-    name: "Vague Creative Brief & Scope Creep Trap (Moderate Risk - Score: ~64)",
-    badge: "Vague Scope Trap",
-    category: "Brand Design & Marketing",
-    description: "Common informal email brief with no clear milestone sign-offs, undefined revision counts, and blurred project edges.",
-    text: `PROJECT BRIEF: BRAND REFRESH & SOCIAL CAMPAIGN
 
-Hey Alex! So excited to work with you on our new startup branding. Here is what we're looking for:
-
-- A fresh, modern logo and comprehensive brand identity (colors, typography, style guide).
-- Complete redesign of our landing page mockups (Figma) and mobile app UI guidelines.
-- Social media launch assets (Instagram, LinkedIn, X banners and templates).
-- Some pitch deck slides and business cards, plus whatever other graphics we need for the launch next month.
-
-Budget & Timing:
-We have a budget of around $2,800 for this first phase. We need the first draft in 2 weeks and final launch ready by end of month. We'll pay half once we see something we really love, and the rest after everything launches successfully.
-
-We usually have lots of team ideas along the way, so we will need you to iterate quickly with us on Slack as feedback comes in. Looking forward to kicking this off tomorrow!`
+  reply: {
+    zoomMeeting: {
+      title: "Dreaded 'Quick 45-Min Sync' Request",
+      incoming: "Hey! Do you have 45 minutes this afternoon for a quick sync on the quarterly roadmap alignment and sprint velocity review?",
+      sender: "Bradley (Project Manager)"
+    },
+    weekendFire: {
+      title: "Non-Urgent Weekend 'Quick Favor'",
+      incoming: "Hey, sorry to bother you on Sunday! A marketing partner wants to see mockups of the landing page by tomorrow 8 AM. Could you whip up 2 variants real quick tonight?",
+      sender: "Chloe (Growth Lead)"
+    },
+    scopeCreep: {
+      title: "Free Feature Addition Request",
+      incoming: "While you're working on the user profile page, could you also build out the full team permissions hierarchy and audit logs? Shouldn't take long!",
+      sender: "Client Stakeholder"
+    }
   },
-  {
-    id: "balanced-sow",
-    name: "Protected Freelance SOW (Low Risk - Score: ~14)",
-    badge: "Protected / Safe SOW",
-    category: "Consulting & Engineering",
-    description: "Industry-standard shielded agreement with 50% deposit, 2 revision cap, 5-day sign-off window, and IP contingent on payment.",
-    text: `STATEMENT OF WORK (SOW) - FREELANCE ENGINEERING
 
-1. SCOPE OF SERVICES
-Contractor shall deliver the scoped e-commerce checkout integration consisting strictly of the three (3) deliverables detailed in Exhibit A: (i) Stripe Elements checkout widget, (ii) Webhook processing endpoint, and (iii) Order confirmation email template. Any features not explicitly itemized in Exhibit A are deemed Out-of-Scope.
+  sort: {
+    messyDownloads: {
+      title: "Chaotic Downloads & Desktop Dump (14 Files)",
+      fileList: [
+        "Screenshot 2026-10-18 at 11.42.09 PM.png",
+        "invoice_uber_oct2026_ride.pdf",
+        "temp_notes_client_sync_final_v2.txt",
+        "gemma2-inference-test-run.log",
+        "IMG_9821_whiteboard_architecture.jpg",
+        "hacktoberfest-badge-winner.png",
+        "w9_tax_form_signed_2026.pdf",
+        "contract_client_acme_unsigned.docx",
+        "zoom_recording_standup_oct19.mp4",
+        "requirements_doc_draft_edit.docx",
+        "coffee_shop_receipt_241026.pdf",
+        "database_dump_staging_backup.sql",
+        "avatar_profile_headshot_crop.png",
+        "scopeshield_architecture_diagram.svg"
+      ]
+    }
+  },
 
-2. REVISION POLICY & CHANGE ORDERS
-Each milestone includes up to two (2) rounds of consolidated revisions. Revisions must align with initial specifications. Any additional revisions, feature adjustments, or changes requested after milestone sign-off shall be billed under a separate Change Order at Contractor's standard rate of $110/hour.
-
-3. ACCEPTANCE CRITERIA
-Client shall have five (5) business days from delivery of each milestone to review and provide consolidated written feedback. If Client fails to provide feedback within five (5) business days, the milestone shall be deemed fully accepted and approved.
-
-4. COMPENSATION AND PAYMENT SCHEDULE
-Total Project Fee: $5,000 USD.
-- Milestone 1: 50% Upfront Deposit ($2,500) due prior to work commencement.
-- Milestone 2: 25% due upon delivery of functional staging build.
-- Milestone 3: 25% due upon deployment to production.
-All invoices are payable Net 14 days. Overdue balances shall accrue interest at 1.5% per month.
-
-5. INTELLECTUAL PROPERTY CONTINGENCY
-Ownership of customized code and deliverables shall transfer to Client exclusively upon Contractor's receipt of full, cleared payment of all outstanding invoices. Contractor retains ownership of all pre-existing tools, starter kits, and general developer utilities.
-
-6. LIMITATION OF LIABILITY & KILL FEE
-Either party may terminate this Agreement upon seven (7) days written notice. In the event of Client cancellation, Contractor shall retain the non-refundable deposit and Client shall pay for all work completed up to the termination date (Kill Fee). Contractor's total liability under this Agreement shall not exceed the total fees paid by Client.`
+  sanctuary: {
+    canopyRain: {
+      title: "Monteverde Canopy Rain",
+      location: "Cloud Forest Reserve, Costa Rica",
+      bpm: "48 (Resting Heart Rate)"
+    },
+    slowRiver: {
+      title: "Tortuguero Slow River Drift",
+      location: "Limón Lowlands, Costa Rica",
+      bpm: "42 (Deep Parasympathetic)"
+    },
+    highlandMoss: {
+      title: "Cerro de la Muerte Highland Moss",
+      location: "Talamanca Range, 3,400m",
+      bpm: "50 (Resting Sloth Cadence)"
+    }
   }
-];
+};

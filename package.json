@@ -1,7 +1,7 @@
 {
-  "name": "scopeshield-ai",
+  "name": "slothdesk-ai",
   "version": "1.0.0",
-  "description": "Local-first client contract risk audit & freelance scope creep defense engine powered by Google Gemma 2",
+  "description": "The Anti-Burnout Desktop Assistant That Rewards Laziness. Local-first group chat summarizer, low-effort boundary drafter, file tidier & ambient bedtime companion powered by Google Gemma 2.",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
@@ -12,9 +12,11 @@
   "keywords": [
     "gemma2",
     "open-weight-ai",
-    "freelance",
-    "contracts",
-    "scope-creep",
+    "international-sloth-day",
+    "slow-and-steady",
+    "productivity",
+    "anti-burnout",
+    "offline-ai",
     "local-ai",
     "devchallenge",
     "hf26challenge"

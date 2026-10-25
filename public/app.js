@@ -1,489 +1,675 @@
 /**
- * ScopeShield AI - Frontend Application
+ * SlothDesk AI — Frontend Application Logic & Procedural Web Audio Engine
  */
 
-document.addEventListener("DOMContentLoaded", () => {
+let PRESETS = null;
+let currentSortResult = null;
+let activeScriptLang = 'ps';
+
+// Procedural Web Audio Synthesizer State
+let audioCtx = null;
+let isAudioPlaying = false;
+let rainNode = null;
+let windNode = null;
+let fireTimer = null;
+let droneOsc = null;
+let droneGain = null;
+let masterGain = null;
+let rainGain = null;
+let windGain = null;
+let fireGain = null;
+
+document.addEventListener('DOMContentLoaded', async () => {
   initTabs();
-  initPresets();
-  initAuditor();
-  initSOW();
-  initEmailDrafter();
-  initCalculator();
-  initModelDiagnostics();
+  initCopyButtons();
+  initDrawer();
+  await loadStatusAndPresets();
+  initDigestTab();
+  initReplyTab();
+  initSortTab();
+  initSanctuaryTab();
 });
 
-// -------------------------------------------------------------
-// 1. TABS NAVIGATION
-// -------------------------------------------------------------
+// Toast notification helper
+function showToast(msg = 'Copied to clipboard!') {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+// 1. Navigation Tabs
 function initTabs() {
-  const buttons = document.querySelectorAll(".tab-btn");
-  const contents = document.querySelectorAll(".tab-content");
-
-  buttons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const tabName = btn.getAttribute("data-tab");
-
-      buttons.forEach(b => {
-        b.classList.remove("active", "bg-indigo-600", "text-white", "shadow-sm", "shadow-indigo-500/30");
-        b.classList.add("text-slate-300", "hover:text-white", "hover:bg-slate-800");
+  const tabs = document.querySelectorAll('.tab-btn');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => {
+        t.classList.remove('active');
+        t.setAttribute('aria-selected', 'false');
       });
-      btn.classList.add("active", "bg-indigo-600", "text-white", "shadow-sm", "shadow-indigo-500/30");
-      btn.classList.remove("text-slate-300", "hover:text-white", "hover:bg-slate-800");
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
 
-      contents.forEach(content => {
-        if (content.id === `tab-${tabName}`) {
-          content.classList.remove("hidden");
-          content.classList.add("block");
-        } else {
-          content.classList.add("hidden");
-          content.classList.remove("block");
-        }
-      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected', 'true');
+      const targetPane = document.getElementById(`pane-${tab.dataset.tab}`);
+      if (targetPane) targetPane.classList.add('active');
     });
   });
 }
 
-// -------------------------------------------------------------
-// 2. PRESETS LOADER
-// -------------------------------------------------------------
-let cachedPresets = [];
-
-async function initPresets() {
-  const contractInput = document.getElementById("contract-input");
-  const clearBtn = document.getElementById("clear-input");
-
-  clearBtn.addEventListener("click", () => {
-    contractInput.value = "";
-    document.getElementById("audit-placeholder").classList.remove("hidden");
-    document.getElementById("audit-results").classList.add("hidden");
-  });
-
-  try {
-    const res = await fetch("/api/presets");
-    if (res.ok) {
-      const data = await res.json();
-      cachedPresets = data.presets || [];
+// 2. Clipboard Helpers
+function initCopyButtons() {
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-copy');
+    if (btn) {
+      const text = btn.dataset.copy || btn.getAttribute('data-text');
+      if (text) {
+        navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard!'));
+      }
     }
-  } catch (e) {
-    console.error("Failed to load presets:", e);
-  }
-
-  const loadPreset = (presetId) => {
-    const p = cachedPresets.find(item => item.id === presetId);
-    if (p) {
-      contractInput.value = p.text;
-      runAudit();
-    }
-  };
-
-  document.getElementById("preset-predatory")?.addEventListener("click", () => loadPreset("predatory-msa"));
-  document.getElementById("preset-vague")?.addEventListener("click", () => loadPreset("vague-creative-brief"));
-  document.getElementById("preset-safe")?.addEventListener("click", () => loadPreset("balanced-sow"));
-
-  // Auto-load predatory preset on first view to give instant wow factor
-  if (cachedPresets.length > 0) {
-    loadPreset("predatory-msa");
-  } else {
-    // If presets fetch hasn't completed yet, retry in 200ms
-    setTimeout(() => {
-      if (cachedPresets.length > 0) loadPreset("predatory-msa");
-    }, 250);
-  }
-}
-
-// -------------------------------------------------------------
-// 3. CONTRACT AUDITOR
-// -------------------------------------------------------------
-let currentFindings = [];
-
-function initAuditor() {
-  const auditBtn = document.getElementById("btn-run-audit");
-  auditBtn.addEventListener("click", runAudit);
-
-  document.getElementById("btn-copy-all-shields")?.addEventListener("click", () => {
-    if (!currentFindings || currentFindings.length === 0) return;
-    const allShields = currentFindings
-      .map((f, i) => `### Counter-Clause ${i + 1}: ${f.title}\n${f.shieldClause}`)
-      .join("\n\n");
-    navigator.clipboard.writeText(allShields);
-    alert("All recommended counter-clauses copied to clipboard!");
   });
 }
 
-async function runAudit() {
-  const text = document.getElementById("contract-input").value.trim();
-  const spinner = document.getElementById("audit-spinner");
-  const placeholder = document.getElementById("audit-placeholder");
-  const results = document.getElementById("audit-results");
-
-  if (!text) {
-    alert("Please enter contract or scope text to audit.");
-    return;
-  }
-
-  spinner.classList.remove("hidden");
-
-  try {
-    const res = await fetch("/api/audit", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text, useLiveGemma: false })
+// 3. Engine Drawer
+function initDrawer() {
+  const btn = document.getElementById('btn-toggle-engine-drawer');
+  const drawer = document.getElementById('engine-drawer');
+  if (btn && drawer) {
+    btn.addEventListener('click', () => {
+      drawer.classList.toggle('open');
+      btn.textContent = drawer.classList.contains('open') ? 'Hide Gemma 2 Harness' : 'Inspect Gemma 2 Harness';
     });
+  }
+}
 
-    if (!res.ok) {
-      throw new Error("Audit request failed.");
+// 4. Load Status & Curated Presets
+async function loadStatusAndPresets() {
+  try {
+    const [statusRes, presetsRes] = await Promise.all([
+      fetch('/api/status'),
+      fetch('/api/presets')
+    ]);
+
+    if (statusRes.ok) {
+      const s = await statusRes.json();
+      const statusText = document.getElementById('system-status-text');
+      if (statusText) {
+        statusText.textContent = `Gemma 2 Engine: ${s.mode}`;
+      }
+      if (s.stats) {
+        updateHUD(s.stats);
+      }
     }
 
-    const json = await res.json();
-    const data = json.data;
-    currentFindings = data.findings || [];
-
-    placeholder.classList.add("hidden");
-    results.classList.remove("hidden");
-
-    // Update Score Circle & Grade
-    const scoreCircle = document.getElementById("score-circle");
-    const scoreGrade = document.getElementById("score-grade");
-    const scoreNumber = document.getElementById("score-number");
-    const riskBadge = document.getElementById("risk-level-badge");
-    const findingsPill = document.getElementById("findings-pill");
-    const summaryText = document.getElementById("risk-summary-text");
-    const exposureAmount = document.getElementById("exposure-amount");
-
-    scoreGrade.textContent = data.grade;
-    scoreNumber.textContent = `${data.score}/100`;
-    riskBadge.textContent = data.riskLevel;
-    findingsPill.textContent = `${data.findingsCount} Issues Flagged`;
-    summaryText.textContent = data.summary;
-    exposureAmount.textContent = data.estimatedLoss;
-
-    // Badge & Grade Color Styling
-    scoreCircle.className = "w-16 h-16 rounded-2xl flex flex-col items-center justify-center shadow-lg border-2";
-    if (data.score > 75) {
-      scoreCircle.classList.add("bg-red-950", "border-red-600");
-      scoreGrade.className = "text-2xl font-black text-red-400 leading-none";
-      scoreNumber.className = "text-[10px] font-bold text-red-300";
-      riskBadge.className = "text-sm font-bold uppercase tracking-wider text-red-400";
-      findingsPill.className = "text-xs px-2 py-0.5 rounded-full bg-red-900/50 text-red-200 border border-red-700/50 font-semibold";
-    } else if (data.score > 50) {
-      scoreCircle.classList.add("bg-orange-950", "border-orange-600");
-      scoreGrade.className = "text-2xl font-black text-orange-400 leading-none";
-      scoreNumber.className = "text-[10px] font-bold text-orange-300";
-      riskBadge.className = "text-sm font-bold uppercase tracking-wider text-orange-400";
-      findingsPill.className = "text-xs px-2 py-0.5 rounded-full bg-orange-900/50 text-orange-200 border border-orange-700/50 font-semibold";
-    } else if (data.score > 30) {
-      scoreCircle.classList.add("bg-amber-950", "border-amber-600");
-      scoreGrade.className = "text-2xl font-black text-amber-400 leading-none";
-      scoreNumber.className = "text-[10px] font-bold text-amber-300";
-      riskBadge.className = "text-sm font-bold uppercase tracking-wider text-amber-400";
-      findingsPill.className = "text-xs px-2 py-0.5 rounded-full bg-amber-900/50 text-amber-200 border border-amber-700/50 font-semibold";
-    } else {
-      scoreCircle.classList.add("bg-emerald-950", "border-emerald-600");
-      scoreGrade.className = "text-2xl font-black text-emerald-400 leading-none";
-      scoreNumber.className = "text-[10px] font-bold text-emerald-300";
-      riskBadge.className = "text-sm font-bold uppercase tracking-wider text-emerald-400";
-      findingsPill.className = "text-xs px-2 py-0.5 rounded-full bg-emerald-900/50 text-emerald-200 border border-emerald-700/50 font-semibold";
+    if (presetsRes.ok) {
+      PRESETS = await presetsRes.json();
     }
-
-    // Update 6 Pillar Bars
-    updatePillar("scope", data.pillarScores.scopeClarity);
-    updatePillar("revisions", data.pillarScores.revisionPolicy);
-    updatePillar("payment", data.pillarScores.paymentTerms);
-    updatePillar("ip", data.pillarScores.ipOwnership);
-    updatePillar("killfee", data.pillarScores.terminationKillFee);
-    updatePillar("liability", data.pillarScores.liabilityExposure);
-
-    // Populate Findings Cards
-    const container = document.getElementById("findings-container");
-    container.innerHTML = "";
-
-    if (data.findings.length === 0) {
-      container.innerHTML = `
-        <div class="p-6 rounded-xl bg-emerald-950/40 border border-emerald-800/50 text-center">
-          <p class="text-sm font-semibold text-emerald-300">🛡️ No critical predatory clauses detected!</p>
-          <p class="text-xs text-slate-400 mt-1">This agreement reflects balanced freelance boundaries.</p>
-        </div>
-      `;
-    } else {
-      data.findings.forEach((finding, idx) => {
-        const card = document.createElement("div");
-        card.className = "finding-card bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-3";
-
-        const sevBadge = finding.severity === "critical"
-          ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-red-950 text-red-300 border border-red-800/60 uppercase">Critical Trap</span>`
-          : finding.severity === "warning"
-          ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-950 text-amber-300 border border-amber-800/60 uppercase">Warning</span>`
-          : `<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-950 text-blue-300 border border-blue-800/60 uppercase">Caution</span>`;
-
-        card.innerHTML = `
-          <div class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-              ${sevBadge}
-              <h5 class="text-xs font-bold text-white">${finding.title}</h5>
-            </div>
-            <span class="text-[10px] text-slate-500 uppercase tracking-wider">${finding.category}</span>
-          </div>
-
-          ${finding.quote ? `
-            <div class="bg-slate-950/80 p-2.5 rounded-lg border-l-2 border-red-500 font-mono text-[11px] text-red-200/90 italic">
-              "${escapeHtml(finding.quote)}"
-            </div>
-          ` : ""}
-
-          <p class="text-xs text-slate-300 leading-relaxed">${finding.explanation}</p>
-
-          <div class="bg-indigo-950/40 border border-indigo-900/50 rounded-lg p-3 space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="text-[10px] font-bold text-indigo-300 uppercase tracking-wider">🛡️ ScopeShield Recommended Counter-Clause</span>
-              <button class="btn-copy-clause px-2 py-0.5 rounded text-[10px] bg-indigo-600 hover:bg-indigo-500 text-white font-medium transition-colors" data-clause="${encodeURIComponent(finding.shieldClause)}">
-                Copy Clause
-              </button>
-            </div>
-            <p class="text-xs font-mono text-indigo-100/90 leading-relaxed">${escapeHtml(finding.shieldClause)}</p>
-          </div>
-        `;
-
-        container.appendChild(card);
-      });
-
-      // Bind copy buttons
-      document.querySelectorAll(".btn-copy-clause").forEach(b => {
-        b.addEventListener("click", (e) => {
-          const clause = decodeURIComponent(e.target.getAttribute("data-clause"));
-          navigator.clipboard.writeText(clause);
-          const origText = e.target.textContent;
-          e.target.textContent = "Copied!";
-          setTimeout(() => e.target.textContent = origText, 1500);
-        });
-      });
-    }
-
   } catch (err) {
-    alert("Error running contract audit: " + err.message);
-  } finally {
-    spinner.classList.add("hidden");
+    console.warn('Initial status fetch error:', err);
   }
 }
 
-function updatePillar(id, val) {
-  const textEl = document.getElementById(`pillar-${id}`);
-  const barEl = document.getElementById(`bar-${id}`);
-  if (!textEl || !barEl) return;
+function updateHUD(stats) {
+  if (!stats) return;
+  const m = document.getElementById('hud-minutes-saved');
+  const r = document.getElementById('hud-replies-drafted');
+  const f = document.getElementById('hud-files-tamed');
+  const p = document.getElementById('hud-sloth-peace');
+  if (m) m.textContent = stats.totalMinutesConserved || 420;
+  if (r) r.textContent = stats.totalRepliesDrafted || 22;
+  if (f) f.textContent = stats.totalFilesTamed || 84;
+  if (p) p.textContent = `${stats.slothPeaceIndex || 98.4}%`;
+}
 
-  textEl.textContent = `${val}%`;
-  barEl.style.width = `${val}%`;
+// ==========================================
+// TAB 1: SLOTH DIGEST
+// ==========================================
+function initDigestTab() {
+  const input = document.getElementById('digest-input');
+  const btnSlack = document.getElementById('btn-preset-slack');
+  const btnFamily = document.getElementById('btn-preset-family');
+  const btnClient = document.getElementById('btn-preset-client');
+  const btnRun = document.getElementById('btn-run-digest');
 
-  barEl.className = "h-1.5 rounded-full transition-all duration-500";
-  textEl.className = "font-bold text-[11px]";
-
-  if (val > 65) {
-    barEl.classList.add("bg-red-500");
-    textEl.classList.add("text-red-400");
-  } else if (val > 35) {
-    barEl.classList.add("bg-amber-500");
-    textEl.classList.add("text-amber-400");
-  } else {
-    barEl.classList.add("bg-emerald-500");
-    textEl.classList.add("text-emerald-400");
+  // Set initial text from Slack preset
+  if (PRESETS && PRESETS.digest && PRESETS.digest.engineeringSlack) {
+    input.value = PRESETS.digest.engineeringSlack.rawText;
   }
-}
 
-// -------------------------------------------------------------
-// 4. SOW GENERATOR
-// -------------------------------------------------------------
-function initSOW() {
-  const btn = document.getElementById("btn-generate-sow");
-  const copyBtn = document.getElementById("btn-copy-sow");
-  const preview = document.getElementById("sow-preview");
+  function setActivePreset(activeBtn, text) {
+    [btnSlack, btnFamily, btnClient].forEach(b => b.classList.remove('active'));
+    activeBtn.classList.add('active');
+    input.value = text;
+  }
 
-  const generate = async () => {
-    const payload = {
-      projectName: document.getElementById("sow-project-name").value,
-      clientName: document.getElementById("sow-client-name").value,
-      freelancerName: document.getElementById("sow-freelancer-name").value,
-      totalFee: Number(document.getElementById("sow-fee").value),
-      hourlyRate: Number(document.getElementById("sow-rate").value),
-      timelineWeeks: Number(document.getElementById("sow-weeks").value),
-      scopeNotes: document.getElementById("sow-scope").value,
-      outOfScopeNotes: document.getElementById("sow-out-of-scope").value
-    };
-
-    try {
-      const res = await fetch("/api/generate-sow", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        const json = await res.json();
-        preview.textContent = json.data.markdown;
-      }
-    } catch (e) {
-      console.error("Failed to generate SOW:", e);
-    }
-  };
-
-  btn.addEventListener("click", generate);
-  copyBtn.addEventListener("click", () => {
-    navigator.clipboard.writeText(preview.textContent);
-    copyBtn.textContent = "Copied SOW!";
-    setTimeout(() => copyBtn.textContent = "Copy Markdown", 1500);
+  btnSlack.addEventListener('click', () => {
+    if (PRESETS?.digest?.engineeringSlack) setActivePreset(btnSlack, PRESETS.digest.engineeringSlack.rawText);
+  });
+  btnFamily.addEventListener('click', () => {
+    if (PRESETS?.digest?.familyWhatsApp) setActivePreset(btnFamily, PRESETS.digest.familyWhatsApp.rawText);
+  });
+  btnClient.addEventListener('click', () => {
+    if (PRESETS?.digest?.clientFeedback) setActivePreset(btnClient, PRESETS.digest.clientFeedback.rawText);
   });
 
-  generate(); // Initial generation
-}
+  btnRun.addEventListener('click', async () => {
+    const rawText = input.value.trim();
+    if (!rawText) return;
 
-// -------------------------------------------------------------
-// 5. PUSHBACK EMAIL DRAFTER
-// -------------------------------------------------------------
-function initEmailDrafter() {
-  const scenarioSelect = document.getElementById("email-scenario");
-  const draftBtn = document.getElementById("btn-draft-email");
-  const copyBtn = document.getElementById("btn-copy-email");
-
-  const updateFieldsVisibility = () => {
-    const scenario = scenarioSelect.value;
-    const featWrap = document.getElementById("wrapper-feature");
-    const invWrap = document.getElementById("wrapper-invoice");
-
-    if (scenario === "out_of_scope") {
-      featWrap.classList.remove("hidden");
-      invWrap.classList.add("hidden");
-    } else if (scenario === "overdue_invoice") {
-      featWrap.classList.add("hidden");
-      invWrap.classList.remove("hidden");
-    } else {
-      featWrap.classList.add("hidden");
-      invWrap.classList.add("hidden");
-    }
-  };
-
-  scenarioSelect.addEventListener("change", updateFieldsVisibility);
-
-  const generateEmail = async () => {
-    const payload = {
-      scenario: scenarioSelect.value,
-      clientName: document.getElementById("email-client-name").value,
-      freelancerName: document.getElementById("email-freelancer-name").value,
-      projectName: document.getElementById("email-project-name").value,
-      hourlyRate: Number(document.getElementById("email-rate").value),
-      featureDescription: document.getElementById("email-feature").value,
-      invoiceNumber: document.getElementById("email-inv-num").value,
-      daysOverdue: Number(document.getElementById("email-days-overdue").value)
-    };
+    btnRun.disabled = true;
+    btnRun.innerHTML = '<span>🦥</span><span>Compressing with Gemma 2...</span>';
 
     try {
-      const res = await fetch("/api/draft-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
+      const res = await fetch('/api/digest', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rawText })
       });
-      if (res.ok) {
-        const json = await res.json();
-        document.getElementById("email-subject").textContent = json.data.subject;
-        document.getElementById("email-body").textContent = json.data.body;
-      }
-    } catch (e) {
-      console.error("Failed to draft email:", e);
-    }
-  };
 
-  draftBtn.addEventListener("click", generateEmail);
-  copyBtn.addEventListener("click", () => {
-    const subj = document.getElementById("email-subject").textContent;
-    const body = document.getElementById("email-body").textContent;
-    navigator.clipboard.writeText(`Subject: ${subj}\n\n${body}`);
-    copyBtn.textContent = "Copied Email!";
-    setTimeout(() => copyBtn.textContent = "Copy Email", 1500);
-  });
-
-  updateFieldsVisibility();
-  generateEmail();
-}
-
-// -------------------------------------------------------------
-// 6. SCOPE CREEP ROI CALCULATOR
-// -------------------------------------------------------------
-function initCalculator() {
-  const hoursInput = document.getElementById("calc-hours");
-  const rateInput = document.getElementById("calc-rate");
-  const weeksInput = document.getElementById("calc-weeks");
-
-  const valHours = document.getElementById("val-hours");
-  const valRate = document.getElementById("val-rate");
-  const valWeeks = document.getElementById("val-weeks");
-
-  const statLoss = document.getElementById("stat-annual-loss");
-  const statHours = document.getElementById("stat-annual-hours");
-  const statRoi = document.getElementById("stat-roi");
-
-  const calculate = () => {
-    const hours = Number(hoursInput.value);
-    const rate = Number(rateInput.value);
-    const weeks = Number(weeksInput.value);
-
-    valHours.textContent = `${hours} hours/week`;
-    valRate.textContent = `$${rate} / hr`;
-    valWeeks.textContent = `${weeks} weeks`;
-
-    const totalHours = hours * weeks;
-    const totalLoss = totalHours * rate;
-    const subscriptionCost = 348; // $29 * 12
-    const roi = Math.round(((totalLoss - subscriptionCost) / subscriptionCost) * 100);
-
-    statLoss.textContent = `$${totalLoss.toLocaleString()} / yr`;
-    statHours.textContent = `${totalHours.toLocaleString()} Hours`;
-    statRoi.textContent = `${Math.max(0, roi).toLocaleString()}%`;
-  };
-
-  hoursInput.addEventListener("input", calculate);
-  rateInput.addEventListener("input", calculate);
-  weeksInput.addEventListener("input", calculate);
-
-  calculate();
-}
-
-// -------------------------------------------------------------
-// 7. MODEL DIAGNOSTICS
-// -------------------------------------------------------------
-function initModelDiagnostics() {
-  const testBtn = document.getElementById("btn-test-connection");
-  const diagMode = document.getElementById("diag-mode");
-  const diagOllama = document.getElementById("diag-ollama");
-
-  const checkStatus = async () => {
-    try {
-      diagOllama.textContent = "Testing connection...";
-      const res = await fetch("/api/model-status");
       if (res.ok) {
         const data = await res.json();
-        if (data.connected) {
-          diagMode.textContent = `Live Open-Weights (${data.activeModel})`;
-          diagMode.className = "text-indigo-400 font-bold";
-          diagOllama.textContent = `Connected at ${data.endpoint} (${data.availableModels.length} models)`;
-          diagOllama.className = "text-emerald-400 font-mono";
-        } else {
-          diagMode.textContent = "Deterministic Gemma 2 Rule Engine (Ready & Shielded)";
-          diagMode.className = "text-emerald-300 font-medium";
-          diagOllama.textContent = "Offline (Standalone local heuristics active with 0ms latency)";
-          diagOllama.className = "text-slate-400";
-        }
+        renderDigestOutput(data);
       }
-    } catch (e) {
-      diagOllama.textContent = "Local Server Pinged (Running Fallback)";
+    } catch (err) {
+      console.error(err);
+    } finally {
+      btnRun.disabled = false;
+      btnRun.innerHTML = '<span>🦥</span><span>Distill With Gemma 2</span>';
     }
-  };
-
-  testBtn.addEventListener("click", checkStatus);
-  checkStatus();
+  });
 }
 
+function renderDigestOutput(data) {
+  // 1. Badge & hint
+  const badge = document.getElementById('digest-saved-badge');
+  if (badge && data.stats) {
+    badge.textContent = `${data.stats.minutesSaved} mins reading saved (${data.stats.cognitiveEnergyConservedPct}% noise cut)`;
+  }
+
+  const hint = document.getElementById('digest-engine-hint');
+  if (hint && data.meta) {
+    hint.textContent = `Inferred in ${data.meta.latencyMs}ms via ${data.meta.model}`;
+  }
+
+  // 2. Truth list
+  const truthList = document.getElementById('digest-truth-list');
+  if (truthList && data.truth) {
+    truthList.innerHTML = data.truth.map(item => `<li>${escapeHtml(item)}</li>`).join('');
+  }
+
+  // 3. Waiting / Blockers
+  const waitingBox = document.getElementById('digest-waiting-container');
+  if (waitingBox && data.waitingOnYou) {
+    waitingBox.innerHTML = data.waitingOnYou.map(w => `
+      <div class="waiting-card">
+        <div class="waiting-person">${escapeHtml(w.person)}</div>
+        <div class="waiting-task">${escapeHtml(w.question)}</div>
+        <div class="waiting-meta">
+          <span class="urgency-pill medium">${escapeHtml(w.urgency)}</span>
+          <span class="wait-note">${w.blocked ? 'Pending your word' : 'Clear to ignore'}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // 4. Lazy Replies
+  const repliesList = document.getElementById('digest-replies-list');
+  if (repliesList && data.lazyReplies) {
+    repliesList.innerHTML = data.lazyReplies.map(r => `
+      <div class="lazy-reply-card">
+        <div class="reply-header">
+          <span class="reply-label">${escapeHtml(r.label)}</span>
+          <button class="btn-copy" data-copy="${escapeQuotes(r.text)}">Copy to Clipboard</button>
+        </div>
+        <p class="reply-text">"${escapeHtml(r.text)}"</p>
+      </div>
+    `).join('');
+  }
+
+  showToast('Brief successfully distilled!');
+}
+
+// ==========================================
+// TAB 2: SLOTH REPLY
+// ==========================================
+function initReplyTab() {
+  const input = document.getElementById('reply-input');
+  const btnZoom = document.getElementById('btn-preset-reply-zoom');
+  const btnWeekend = document.getElementById('btn-preset-reply-weekend');
+  const btnScope = document.getElementById('btn-preset-reply-scope');
+  const btnRun = document.getElementById('btn-run-reply');
+  const btnCopy = document.getElementById('btn-copy-reply');
+
+  function setActivePreset(btn, text) {
+    [btnZoom, btnWeekend, btnScope].forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    input.value = text;
+  }
+
+  btnZoom.addEventListener('click', () => {
+    if (PRESETS?.reply?.zoomMeeting) setActivePreset(btnZoom, PRESETS.reply.zoomMeeting.incoming);
+  });
+  btnWeekend.addEventListener('click', () => {
+    if (PRESETS?.reply?.weekendFire) setActivePreset(btnWeekend, PRESETS.reply.weekendFire.incoming);
+  });
+  btnScope.addEventListener('click', () => {
+    if (PRESETS?.reply?.scopeCreep) setActivePreset(btnScope, PRESETS.reply.scopeCreep.incoming);
+  });
+
+  btnRun.addEventListener('click', async () => {
+    const incomingRequest = input.value.trim();
+    if (!incomingRequest) return;
+
+    const energyLevel = document.querySelector('input[name="energy-level"]:checked')?.value || 'zen';
+
+    btnRun.disabled = true;
+    btnRun.innerHTML = '<span>🛡️</span><span>Drafting Defense...</span>';
+
+    try {
+      const res = await fetch('/api/reply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ incomingRequest, energyLevel, intent: 'async' })
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        renderReplyOutput(data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      btnRun.disabled = false;
+      btnRun.innerHTML = '<span>🛡️</span><span>Generate Diplomatic Pushback</span>';
+    }
+  });
+
+  btnCopy.addEventListener('click', () => {
+    const text = document.getElementById('reply-body')?.textContent;
+    if (text) {
+      navigator.clipboard.writeText(text).then(() => showToast('Email draft copied!'));
+    }
+  });
+}
+
+function renderReplyOutput(data) {
+  const badge = document.getElementById('reply-saved-badge');
+  if (badge) badge.textContent = `${data.effortConservedMinutes || 45} mins preserved`;
+
+  const subject = document.getElementById('reply-subject');
+  if (subject) subject.textContent = data.subject || 'Re: Update';
+
+  const body = document.getElementById('reply-body');
+  if (body) body.textContent = data.draft;
+
+  const insight = document.getElementById('reply-insight-text');
+  if (insight) insight.textContent = data.slothTip || 'Protects your calendar and peace of mind.';
+
+  showToast('Pushback drafted!');
+}
+
+// ==========================================
+// TAB 3: SLOTH SORT
+// ==========================================
+function initSortTab() {
+  const input = document.getElementById('sort-input');
+  const btnPreset = document.getElementById('btn-preset-sort-downloads');
+  const btnRun = document.getElementById('btn-run-sort');
+  const btnCopyScript = document.getElementById('btn-copy-script');
+  const scriptTabs = document.querySelectorAll('.script-tab');
+
+  if (PRESETS?.sort?.messyDownloads) {
+    input.value = PRESETS.sort.messyDownloads.fileList.join('\n');
+    // Pre-run organize on load so the tab is never empty
+    triggerSort();
+  }
+
+  btnPreset.addEventListener('click', () => {
+    if (PRESETS?.sort?.messyDownloads) {
+      input.value = PRESETS.sort.messyDownloads.fileList.join('\n');
+      triggerSort();
+    }
+  });
+
+  btnRun.addEventListener('click', triggerSort);
+
+  async function triggerSort() {
+    const text = input.value.trim();
+    if (!text) return;
+    const fileList = text.split('\n').map(s => s.trim()).filter(Boolean);
+
+    btnRun.disabled = true;
+    btnRun.innerHTML = '<span>📁</span><span>Tidying Clutter...</span>';
+
+    try {
+      const res = await fetch('/api/sort', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileList })
+      });
+
+      if (res.ok) {
+        currentSortResult = await res.json();
+        renderSortOutput(currentSortResult);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      btnRun.disabled = false;
+      btnRun.innerHTML = '<span>📁</span><span>Tidy Clutter & Generate Scripts</span>';
+    }
+  }
+
+  scriptTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      scriptTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      activeScriptLang = tab.dataset.lang;
+      renderScriptCode();
+    });
+  });
+
+  btnCopyScript.addEventListener('click', () => {
+    if (!currentSortResult || !currentSortResult.scripts) return;
+    const code = activeScriptLang === 'ps' ? currentSortResult.scripts.powershell : currentSortResult.scripts.bash;
+    navigator.clipboard.writeText(code).then(() => showToast(`1-Click ${activeScriptLang === 'ps' ? 'PowerShell' : 'Bash'} cleanup script copied!`));
+  });
+}
+
+function renderSortOutput(data) {
+  const badge = document.getElementById('sort-saved-badge');
+  if (badge) badge.textContent = `${data.timeSavedMinutes || 35} mins saved`;
+
+  const container = document.getElementById('taxonomy-container');
+  if (container && data.taxonomy) {
+    container.innerHTML = data.taxonomy.filter(c => c.count > 0).map(cat => `
+      <div class="cat-box">
+        <div class="cat-header">
+          <span>${escapeHtml(cat.categoryName)}</span>
+          <span class="cat-folder">/${cat.folderPath}/ (${cat.count} files)</span>
+        </div>
+        <ul class="cat-items">
+          ${cat.items.map(i => `
+            <li class="cat-item">
+              <span>${escapeHtml(i.original)}</span>
+              <span class="cat-arrow">→</span>
+              <strong>${escapeHtml(i.cleaned)}</strong>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `).join('');
+  }
+
+  renderScriptCode();
+}
+
+function renderScriptCode() {
+  const codeEl = document.getElementById('script-code-display');
+  if (!codeEl || !currentSortResult || !currentSortResult.scripts) return;
+  codeEl.textContent = activeScriptLang === 'ps' ? currentSortResult.scripts.powershell : currentSortResult.scripts.bash;
+}
+
+// ==========================================
+// TAB 4: SLOTH SANCTUARY & PROCEDURAL AUDIO
+// ==========================================
+function initSanctuaryTab() {
+  const btnToggle = document.getElementById('btn-toggle-audio');
+  const btnLabel = document.getElementById('audio-btn-label');
+  const btnNewFable = document.getElementById('btn-new-fable');
+  const btnCopyFable = document.getElementById('btn-copy-fable');
+  const themeChips = document.querySelectorAll('.theme-chip');
+
+  // Sliders
+  const slRain = document.getElementById('vol-rain');
+  const slWind = document.getElementById('vol-wind');
+  const slFire = document.getElementById('vol-fire');
+  const slDrone = document.getElementById('vol-drone');
+
+  slRain.addEventListener('input', e => {
+    document.getElementById('val-rain').textContent = `${e.target.value}%`;
+    if (rainGain) rainGain.gain.setValueAtTime(e.target.value / 100 * 0.4, audioCtx.currentTime);
+  });
+  slWind.addEventListener('input', e => {
+    document.getElementById('val-wind').textContent = `${e.target.value}%`;
+    if (windGain) windGain.gain.setValueAtTime(e.target.value / 100 * 0.35, audioCtx.currentTime);
+  });
+  slFire.addEventListener('input', e => {
+    document.getElementById('val-fire').textContent = `${e.target.value}%`;
+    if (fireGain) fireGain.gain.setValueAtTime(e.target.value / 100 * 0.25, audioCtx.currentTime);
+  });
+  slDrone.addEventListener('input', e => {
+    document.getElementById('val-drone').textContent = `${e.target.value}%`;
+    if (droneGain) droneGain.gain.setValueAtTime(e.target.value / 100 * 0.3, audioCtx.currentTime);
+  });
+
+  // Toggle procedural audio
+  btnToggle.addEventListener('click', () => {
+    if (!isAudioPlaying) {
+      startProceduralAudio();
+      btnToggle.classList.add('playing');
+      btnLabel.textContent = 'Pause Ambient Sanctuary';
+      isAudioPlaying = true;
+    } else {
+      pauseProceduralAudio();
+      btnToggle.classList.remove('playing');
+      btnLabel.textContent = 'Start Ambient Sanctuary';
+      isAudioPlaying = false;
+    }
+  });
+
+  // Fable generation
+  let activeFableTheme = 'canopyRain';
+  themeChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      themeChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      activeFableTheme = chip.dataset.fable;
+      fetchFable(activeFableTheme);
+    });
+  });
+
+  btnNewFable.addEventListener('click', () => fetchFable(activeFableTheme));
+
+  btnCopyFable.addEventListener('click', () => {
+    const title = document.getElementById('fable-title')?.textContent;
+    const body = document.getElementById('fable-body')?.innerText;
+    if (title && body) {
+      navigator.clipboard.writeText(`${title}\n\n${body}`).then(() => showToast('Bedtime fable copied!'));
+    }
+  });
+}
+
+// Procedural Web Audio API Synthesis Engine (100% Offline, Zero Network Audio Files)
+function startProceduralAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
+  masterGain = audioCtx.createGain();
+  masterGain.gain.setValueAtTime(0.8, audioCtx.currentTime);
+  masterGain.connect(audioCtx.destination);
+
+  // 1. Rain Synthesizer (Pink noise buffer filtered through low-pass)
+  const bufferSize = audioCtx.sampleRate * 2;
+  const rainBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const rainData = rainBuffer.getChannelData(0);
+  let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+  for (let i = 0; i < bufferSize; i++) {
+    const white = Math.random() * 2 - 1;
+    b0 = 0.99886 * b0 + white * 0.0555179;
+    b1 = 0.99332 * b1 + white * 0.0750759;
+    b2 = 0.96900 * b2 + white * 0.1538520;
+    b3 = 0.86650 * b3 + white * 0.3104856;
+    b4 = 0.55000 * b4 + white * 0.5329522;
+    b5 = -0.7616 * b5 - white * 0.0168980;
+    rainData[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.04;
+    b6 = white * 0.115926;
+  }
+
+  rainNode = audioCtx.createBufferSource();
+  rainNode.buffer = rainBuffer;
+  rainNode.loop = true;
+
+  const rainFilter = audioCtx.createBiquadFilter();
+  rainFilter.type = 'lowpass';
+  rainFilter.frequency.setValueAtTime(850, audioCtx.currentTime);
+
+  rainGain = audioCtx.createGain();
+  const rainVol = parseInt(document.getElementById('vol-rain')?.value || 45) / 100 * 0.4;
+  rainGain.gain.setValueAtTime(rainVol, audioCtx.currentTime);
+
+  rainNode.connect(rainFilter);
+  rainFilter.connect(rainGain);
+  rainGain.connect(masterGain);
+  rainNode.start();
+
+  // 2. Wind Synthesizer (Bandpass filter with slow LFO modulator)
+  const windBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+  const windData = windBuffer.getChannelData(0);
+  for (let i = 0; i < bufferSize; i++) {
+    windData[i] = (Math.random() * 2 - 1) * 0.05;
+  }
+
+  windNode = audioCtx.createBufferSource();
+  windNode.buffer = windBuffer;
+  windNode.loop = true;
+
+  const windFilter = audioCtx.createBiquadFilter();
+  windFilter.type = 'bandpass';
+  windFilter.frequency.setValueAtTime(320, audioCtx.currentTime);
+  windFilter.Q.setValueAtTime(3.0, audioCtx.currentTime);
+
+  // LFO for slow canopy swell
+  const windLfo = audioCtx.createOscillator();
+  windLfo.frequency.setValueAtTime(0.12, audioCtx.currentTime); // ~8 sec wave
+  const windLfoGain = audioCtx.createGain();
+  windLfoGain.gain.setValueAtTime(140, audioCtx.currentTime);
+  windLfo.connect(windLfoGain);
+  windLfoGain.connect(windFilter.frequency);
+  windLfo.start();
+
+  windGain = audioCtx.createGain();
+  const windVol = parseInt(document.getElementById('vol-wind')?.value || 30) / 100 * 0.35;
+  windGain.gain.setValueAtTime(windVol, audioCtx.currentTime);
+
+  windNode.connect(windFilter);
+  windFilter.connect(windGain);
+  windGain.connect(masterGain);
+  windNode.start();
+
+  // 3. Hearthside Fire Crackle (Procedural periodic pops)
+  fireGain = audioCtx.createGain();
+  const fireVol = parseInt(document.getElementById('vol-fire')?.value || 20) / 100 * 0.25;
+  fireGain.gain.setValueAtTime(fireVol, audioCtx.currentTime);
+  fireGain.connect(masterGain);
+
+  function scheduleCrackle() {
+    if (!isAudioPlaying || !audioCtx) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(180 + Math.random() * 320, now);
+    g.gain.setValueAtTime(0.2, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+    osc.connect(g);
+    g.connect(fireGain);
+    osc.start(now);
+    osc.stop(now + 0.04);
+
+    const nextDelay = 120 + Math.random() * 450;
+    fireTimer = setTimeout(scheduleCrackle, nextDelay);
+  }
+  scheduleCrackle();
+
+  // 4. 432Hz Calm Alpha Drone (Pure meditative foundation)
+  droneOsc = audioCtx.createOscillator();
+  droneOsc.type = 'sine';
+  droneOsc.frequency.setValueAtTime(432 / 4, audioCtx.currentTime); // Sub-bass 108Hz octave of 432Hz
+
+  const droneOsc2 = audioCtx.createOscillator();
+  droneOsc2.type = 'sine';
+  droneOsc2.frequency.setValueAtTime((432 / 4) + 1.5, audioCtx.currentTime); // 1.5Hz binaural alpha beat
+
+  droneGain = audioCtx.createGain();
+  const droneVol = parseInt(document.getElementById('vol-drone')?.value || 25) / 100 * 0.3;
+  droneGain.gain.setValueAtTime(droneVol, audioCtx.currentTime);
+
+  droneOsc.connect(droneGain);
+  droneOsc2.connect(droneGain);
+  droneGain.connect(masterGain);
+
+  droneOsc.start();
+  droneOsc2.start();
+}
+
+function pauseProceduralAudio() {
+  if (fireTimer) clearTimeout(fireTimer);
+  if (rainNode) {
+    try { rainNode.stop(); } catch {}
+  }
+  if (windNode) {
+    try { windNode.stop(); } catch {}
+  }
+  if (droneOsc) {
+    try { droneOsc.stop(); } catch {}
+  }
+  if (audioCtx) {
+    audioCtx.suspend();
+  }
+}
+
+async function fetchFable(theme) {
+  const btn = document.getElementById('btn-new-fable');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>🦥</span><span>Dreaming with Gemma 2...</span>';
+  }
+
+  try {
+    const res = await fetch('/api/fable', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ theme })
+    });
+
+    if (res.ok) {
+      const data = await res.json();
+      document.getElementById('fable-title').textContent = data.title;
+      document.getElementById('fable-setting').textContent = data.setting;
+      document.getElementById('fable-bpm-badge').textContent = data.bpmTarget || '46 BPM (Deep Rest)';
+      document.getElementById('fable-body').innerHTML = data.story
+        .split('\n\n')
+        .map(p => `<p>${escapeHtml(p)}</p>`)
+        .join('');
+      showToast('New bedtime fable ready');
+    }
+  } catch (err) {
+    console.error(err);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<span>🦥</span><span>Generate Another Fable</span>';
+    }
+  }
+}
+
+// Helpers
 function escapeHtml(str) {
-  if (!str) return "";
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function escapeQuotes(str) {
+  if (!str) return '';
+  return String(str).replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
